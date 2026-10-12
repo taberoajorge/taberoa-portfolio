@@ -7,6 +7,7 @@ type Input = { tool?: string; sessionID?: string };
 type Output = { args?: Record<string, unknown> };
 type Client = { app: { log: (entry: { body: Record<string, string> }) => Promise<unknown> } };
 
+/** @public OpenCode loads every export of a plugin file. */
 export const AgentHooks = async ({ client }: { client: Client }) => ({
   'tool.execute.before': async (input: Input, output: Output) => {
     const event = normalize(

@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { test } from 'node:test';
-import { clash, portOf } from './port.ts';
+import { clash, port, portOf } from './port.ts';
 
 test('the main checkout keeps 3302', () => {
   assert.equal(portOf({ path: '/any/where', main: true }), 3302);
@@ -21,4 +25,14 @@ test('a clash names the other worktree', () => {
   const other = { path: `/w/b${n}`, main: false };
   assert.equal(clash(self, [self, other])?.path, other.path);
   assert.equal(clash(self, [self, { path: '/w/main', main: true }]), null);
+});
+
+test('a deleted, unpruned worktree does not break the port lookup', () => {
+  const root = mkdtempSync(join(tmpdir(), 'port-'));
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: root, stdio: 'ignore' });
+  git('init', '-q');
+  git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '--allow-empty', '-m', 'init');
+  git('worktree', 'add', '-q', join(root, 'gone'));
+  rmSync(join(root, 'gone'), { recursive: true });
+  assert.equal(port(root), 3302);
 });

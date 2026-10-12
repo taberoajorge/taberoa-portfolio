@@ -2,7 +2,7 @@
 
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { realpathSync } from 'node:fs';
+import { existsSync, realpathSync } from 'node:fs';
 
 const BASE = 3300;
 const MAIN = 3302;
@@ -22,11 +22,13 @@ export function clash(self: Checkout, all: Checkout[]) {
 }
 
 // `git worktree list` names the main checkout first.
-export function checkouts(cwd = process.cwd()): { self: Checkout; all: Checkout[] } {
+function checkouts(cwd = process.cwd()): { self: Checkout; all: Checkout[] } {
   const paths = execFileSync('git', ['worktree', 'list', '--porcelain'], { cwd, encoding: 'utf8' })
     .split('\n')
     .filter((line) => line.startsWith('worktree '))
-    .map((line) => realpathSync(line.slice('worktree '.length)));
+    .map((line) => line.slice('worktree '.length))
+    // a worktree folder deleted without `git worktree prune` is still listed
+    .map((path) => (existsSync(path) ? realpathSync(path) : path));
   const all = paths.map((path, i) => ({ path, main: i === 0 }));
   const here = realpathSync(
     execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' }).trim(),

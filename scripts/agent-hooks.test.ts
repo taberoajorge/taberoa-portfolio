@@ -57,14 +57,22 @@ const bash = (command: string) =>
 
 test('shell writes into src/iso are blocked; reading it is not', () => {
   assert.ok(denied(bash("sed -i '' 's/a/b/' src/iso/iso.css")));
+  assert.ok(denied(bash('rm -rf src/iso')));
+  assert.ok(denied(bash('cp /tmp/kit.css src/iso/iso.css')));
+  assert.ok(denied(bash('echo x > src/iso/iso.css')));
   assert.ok(!denied(bash('grep -n Plate src/iso/react/draw.tsx')));
+  assert.ok(!denied(bash('cp src/iso/iso.css /tmp/kit.css')));
 });
 
 test('force-pushing main is blocked; a normal push and a branch force push are not', () => {
   assert.ok(denied(bash('git push --force origin main')));
   assert.ok(denied(bash('git fetch && git push -f origin main')));
+  assert.ok(denied(bash('git push -uf origin main')));
+  assert.ok(denied(bash('git push origin +main')));
+  assert.ok(denied(bash('git push -f origin HEAD:refs/heads/main')));
   assert.ok(!denied(bash('git push origin main')));
   assert.ok(!denied(bash('git push --force-with-lease origin fix/camera')));
+  assert.ok(!denied(bash('git push -f origin feat/main')));
   assert.ok(!denied(bash('echo "never run git push --force origin main"')));
 });
 
@@ -73,16 +81,24 @@ test('commits with AI attribution and skipped hooks are blocked', () => {
     denied(bash('git commit -m "feat: x\n\nCo-Authored-By: Claude <noreply@anthropic.com>"')),
   );
   assert.ok(denied(bash('git commit --no-verify -m "feat: x"')));
+  assert.ok(denied(bash('git commit -n -m "feat: x"')));
+  assert.ok(denied(bash('git commit -anm "feat: x"')));
+  assert.ok(denied(bash('git -c core.hooksPath=/dev/null commit -m "feat: x"')));
   assert.ok(!denied(bash('git commit -m "feat(site): serve llms.txt"')));
+  assert.ok(!denied(bash('git commit --amend -m "feat(site): serve llms.txt"')));
 });
 
-test('writing a credential is blocked', () => {
-  const out = runHook('gemini', {
+const token = `ghp_${'a'.repeat(36)}`;
+const write = (file_path: string) =>
+  runHook('gemini', {
     hook_event_name: 'BeforeTool',
     tool_name: 'write_file',
-    tool_input: { file_path: 'notes.md', content: `token ghp_${'a'.repeat(36)}` },
+    tool_input: { file_path, content: `TOKEN=${token}` },
   });
-  assert.deepEqual(out, { decision: 'deny', reason: (out as { reason: string }).reason });
+
+test('writing a credential into a tracked file is blocked; into an ignored env file it is not', () => {
+  assert.ok(denied(write('notes.md')));
+  assert.deepEqual(write('.env.local'), {});
 });
 
 test('session start adds branch, port and active changes for each client', () => {

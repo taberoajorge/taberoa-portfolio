@@ -2,7 +2,7 @@
 // and the pre-push guard. Stacked PRs go through git-spice instead (see AGENTS.md).
 import { execFileSync, spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { TITLE } from './commit-msg.ts';
+import { TITLE, TYPES } from './commit-msg.ts';
 
 const SECTIONS = ['Summary', 'Intent', 'Verification'];
 
@@ -49,7 +49,7 @@ function stop(found: string[]) {
 
 const COMMANDS: Record<string, (args: string[]) => void> = {
   branch([name]) {
-    if (!/^(feat|fix|docs|refactor|perf|test|build|ci|chore)\/[a-z0-9-]+$/.test(name ?? ''))
+    if (!new RegExp(`^(${TYPES})/[a-z0-9-]+$`).test(name ?? ''))
       throw new Error('Name the branch type/short-name, e.g. fix/camera-jump.');
     git('fetch', '--quiet', 'origin', 'main');
     git('switch', '--create', name, 'origin/main');

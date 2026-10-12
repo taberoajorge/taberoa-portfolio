@@ -20,8 +20,7 @@ export function useDirector<P extends Pose>(
       if (r.style.transform !== css) r.style.transform = css;
       v.toggleAttribute('data-moving', moving);
       v.toggleAttribute('data-zoomed', director.camera.zoomed);
-      const points = director.hooks.labels?.(director.pose);
-      if (!points) return;
+      const points = director.hooks.labels(director.pose);
       v.querySelectorAll<HTMLElement>('[data-step-tag]').forEach((tag, i) => {
         const [x, y] = director.camera.toScreen(points[i], v.clientWidth);
         const out = x < 0 || y < 0 || x > v.clientWidth || y > v.clientHeight;

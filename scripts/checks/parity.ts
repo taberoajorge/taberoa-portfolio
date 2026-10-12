@@ -2,6 +2,7 @@
 // `save` writes the baseline; `compare` fails on any difference from it.
 // ponytail: regex over Next's own HTML, not a parser; it only has to read what this site renders.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { port } from '../port.ts';
 
 const PAGES = { en: '/', es: '/es' } as const;
 const DIR = 'artifacts/parity';
@@ -69,7 +70,7 @@ function differs(lang: string, was: Snapshot, now: Snapshot) {
 }
 
 async function main() {
-  const [mode = 'save', base = 'http://localhost:3302'] = process.argv.slice(2);
+  const [mode = 'save', base = `http://localhost:${port()}`] = process.argv.slice(2);
   for (const [lang, path] of Object.entries(PAGES)) {
     const res = await fetch(new URL(path, base), {
       headers: { 'accept-language': lang },

@@ -91,6 +91,6 @@
 
 ## 13. Verificación integral
 
-- [ ] 13.1 Ejecutar `pnpm check` y `pnpm build`, la paridad final contra la línea base y una hoja de contactos de las tres figuras con Play. Se verifica con todo en verde y la paridad sin diferencias.
-- [ ] 13.2 Ejecutar `pnpm perf` final (local) sobre `/` y `/es`. Se verifica con 100 en las cuatro categorías en móvil y escritorio.
-- [ ] 13.3 Revisar el diff con `/code-review` y una pasada contra el código de relleno (exportaciones, comentarios, abstracciones). Se verifica cuando los hallazgos están resueltos o justificados.
+- [x] 13.1 Ejecutar `pnpm check` y `pnpm build`, la paridad final contra la línea base y una hoja de contactos de las tres figuras con Play. Se verifica con todo en verde y la paridad sin diferencias.
+- [x] 13.2 Ejecutar `pnpm perf` final (local) sobre `/` y `/es`. Se verifica con 100 en las cuatro categorías en móvil y escritorio.
+- [x] 13.3 Revisar el diff con `/code-review` y una pasada contra el código de relleno (exportaciones, comentarios, abstracciones). Se verifica cuando los hallazgos están resueltos o justificados.

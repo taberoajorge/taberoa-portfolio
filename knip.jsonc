@@ -1,6 +1,14 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["scripts/**/*.{ts,tsx}", "src/**/*.test.ts"],
+  // the scripts that are run directly; anything else in scripts/ must be imported to count as used
+  "entry": [
+    "scripts/{agent-hooks,commit-msg,delivery,port,run}.ts",
+    "scripts/checks/{boundaries,parity,perf}.ts",
+    "{src,scripts}/**/*.test.ts",
+    ".opencode/plugins/*.ts"
+  ],
+  // entry files are scripts, not libraries: their exports must be used too
+  "includeEntryExports": true,
   "project": ["src/**/*.{ts,tsx,css}", "scripts/**/*.{ts,tsx}"],
   // the /anatomy kit is vendored whole; its unused exports are the kit's, not ours
   "ignore": ["src/iso/**"]

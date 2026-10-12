@@ -34,7 +34,10 @@ export function Deferred({
       (entries) => {
         if (!entries.some((e) => e.isIntersecting)) return;
         watch.disconnect();
-        LIVE[id]().then((component) => gone || setLive(() => component));
+        // ponytail: if the chunk fails to load, the static figure simply stays
+        LIVE[id]()
+          .then((component) => gone || setLive(() => component))
+          .catch(() => {});
       },
       { rootMargin: '100% 0px' },
     );

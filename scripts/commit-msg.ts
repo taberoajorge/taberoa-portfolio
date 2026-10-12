@@ -1,7 +1,7 @@
 // Conventional Commits, and no AI attribution. Used by .githooks/commit-msg, CI and delivery.ts.
 import { readFileSync } from 'node:fs';
 
-const TYPES = 'feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert';
+export const TYPES = 'feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert';
 export const TITLE = new RegExp(`^(${TYPES})(\\([a-z0-9-]+\\))?!?: \\S.{0,99}$`);
 // Git's own subjects for reverts, fixups and merges are fine as they are.
 const GIT_MADE =
@@ -18,7 +18,9 @@ export const attributed = (text: string) =>
   text.split('\n').find((line) => ATTRIBUTION.some((pattern) => pattern.test(line)));
 
 export function problems(message: string): string[] {
+  // `git commit -v` appends the diff after a scissors line; only what is above it is the message.
   const text = message
+    .split(/^# -+ >8 -+$/m)[0]
     .split('\n')
     .filter((line) => !line.startsWith('#'))
     .join('\n')

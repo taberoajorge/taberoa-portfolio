@@ -124,28 +124,54 @@ function onMain(root: string) {
   }
 }
 
-const writesIso = (part: string) =>
-  /(?:>{1,2}|\btee\b|\bsed\s+-i|\bperl\s+-\w*i|^(?:cp|mv|rm|truncate)\b).*\bsrc\/iso\//.test(part);
+const ISO = /(^|[\s'"=/.])src\/iso(\/|['"\s]|$)/;
+// Shell commands that change src/iso: redirects, in-place edits, and cp/mv into it or rm of it.
+// Reading from it (cat, grep, cp out of it) is fine.
+function writesIso(part: string) {
+  const words = part.split(/\s+/);
+  if (/>{1,2}\s*\S*src\/iso/.test(part) || /\btee\b.*src\/iso/.test(part)) return true;
+  if (/^(sed\s+-i|perl\s+-\w*i|rm|truncate)\b/.test(part)) return ISO.test(part);
+  return /^(cp|mv)\b/.test(part) && ISO.test(` ${words.at(-1)}`);
+}
 
+const MAIN_REF = /^\+?(?:[^:]*:)?(?:refs\/heads\/)?main$/;
 // A forced push that lands on main: named explicitly, or implied by pushing the current branch.
 function forcesMain(root: string, part: string) {
   const args = part.split(/\s+/).slice(part.split(/\s+/).indexOf('push') + 1);
-  if (!args.some((a) => /^(-f|--force(-with-lease)?(=.*)?)$/.test(a) || a.startsWith('+')))
-    return false;
+  const forced = args.some(
+    (a) =>
+      /^--force(-with-lease)?(=.*)?$/.test(a) || /^-[a-z]*f[a-z]*$/.test(a) || a.startsWith('+'),
+  );
+  if (!forced) return false;
   const positional = args.filter((a) => !a.startsWith('-'));
-  if (positional.length >= 2) return positional.slice(1).some((ref) => /(^|[:+/])main$/.test(ref));
+  if (positional.length >= 2) return positional.slice(1).some((ref) => MAIN_REF.test(ref));
   return onMain(root);
 }
 
 // What a single git command must never do, or null. `text` is the whole tool input, since a
 // multi-line commit message spans several shell segments.
 function gitProblem(root: string, part: string, text: string) {
-  if (/\s--no-verify\b/.test(part)) return 'Keep the Git hooks on: no --no-verify.';
+  const commit = /^git\s+(.*\s)?commit\b/.test(part);
+  if (/\s--no-verify\b/.test(part) || (commit && /\s-[a-zA-Z]*n[a-zA-Z]*(\s|$)/.test(part)))
+    return 'Keep the Git hooks on: no --no-verify (or -n).';
+  if (/\s-c\s*core\.hooksPath=/.test(part))
+    return 'Keep the Git hooks on: no core.hooksPath override.';
   if (/^git\s+(.*\s)?push\b/.test(part) && forcesMain(root, part))
     return 'Never force-push main. Rebase onto origin/main and push without force.';
-  if (/^git\s+(.*\s)?commit\b/.test(part) && attributed(text))
+  if (commit && attributed(text))
     return 'Commits name people only: remove the AI attribution from the message.';
   return null;
+}
+
+// Paths Git ignores (env files, local settings) are where secrets belong.
+function ignored(root: string, paths: string[]) {
+  if (!paths.length) return false;
+  try {
+    execFileSync('git', ['check-ignore', '-q', '--', ...paths], { cwd: root });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // Each rule returns why the tool call must not run, or null.
@@ -154,8 +180,12 @@ const RULES: ((root: string, event: HookEvent, shell: string[]) => string | null
     editedPaths(event).some((p) => inside(root, p)?.startsWith('src/iso/')) || shell.some(writesIso)
       ? 'src/iso is the vendored /anatomy kit. Do not edit it; re-copy it from the skill.'
       : null,
-  (_root, { input }) =>
-    SECRETS.some((pattern) => pattern.test(written(input)) || pattern.test(command(input)))
+  (root, event) =>
+    SECRETS.some(
+      (pattern) =>
+        (pattern.test(written(event.input)) && !ignored(root, editedPaths(event))) ||
+        pattern.test(command(event.input)),
+    )
       ? 'That looks like a credential. Keep secrets in ignored env files, never in the repo.'
       : null,
   (root, { input }, shell) =>
@@ -165,7 +195,7 @@ const RULES: ((root: string, event: HookEvent, shell: string[]) => string | null
       .find(Boolean) ?? null,
 ];
 
-export function guard(root: string, event: HookEvent): Decision {
+function guard(root: string, event: HookEvent): Decision {
   const shell = segments(command(event.input));
   for (const rule of RULES) {
     const reason = rule(root, event, shell);
@@ -183,7 +213,7 @@ function gitDir(root: string) {
 const certificatePath = (root: string) => join(gitDir(root), 'agent-hooks', 'certificate.json');
 
 // The state of the working tree: HEAD, the uncommitted diff and every untracked file.
-export function fingerprint(root: string) {
+function fingerprint(root: string) {
   const git = (...args: string[]) => execFileSync('git', args, { cwd: root, maxBuffer: 1 << 26 });
   const hash = createHash('sha256')
     .update(git('rev-parse', 'HEAD'))
@@ -284,7 +314,7 @@ const ENCODERS: Record<Client, Encoder> = {
   opencode: (_kind, result) => ({ ...result }),
 };
 
-export const encode = (event: HookEvent, result: Decision): Row =>
+const encode = (event: HookEvent, result: Decision): Row =>
   ENCODERS[event.client](event.kind, result);
 
 export function runHook(client: Client, raw: unknown, name?: string, root = repository): Row {

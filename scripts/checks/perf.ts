@@ -106,10 +106,8 @@ async function htmlProblems(url: string) {
 async function main() {
   const args = process.argv.slice(2);
   const ci = args.includes('--ci');
-  const base =
-    args[args.indexOf('--url') + 1] && args.includes('--url')
-      ? args[args.indexOf('--url') + 1]
-      : `http://localhost:${port()}`;
+  const at = args.indexOf('--url');
+  const base = at >= 0 ? args[at + 1] : `http://localhost:${port()}`;
   let failed = false;
   for (const path of PAGES) {
     const url = new URL(path, base).href;

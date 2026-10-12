@@ -118,7 +118,8 @@ export class Director<P extends Pose> {
     const gliding = this.camera.step(dt, calm);
     const springing = this.hooks.springs(dt, calm);
     this.hooks.write(this.pose);
-    const busy = Boolean(this.seg) || this.queue.length > 0;
+    // a paused segment is not work: the loop sleeps until play or step kicks it again
+    const busy = !frozen && (Boolean(this.seg) || this.queue.length > 0);
     const wants = !frozen && (this.pending > 0 || (this.playing && !calm && !this.hooks.done()));
     return { more: busy || wants || gliding || springing, gliding };
   }

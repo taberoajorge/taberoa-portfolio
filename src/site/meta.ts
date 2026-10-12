@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { content, type Lang, LINKS, PATHS, SITE } from '../content';
 
+/** @public Next reads it through the layouts' re-export. */
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
