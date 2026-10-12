@@ -9,6 +9,10 @@ serves on its own port, so several can run side by side.
 start only after it finishes (`setupAgentStartupPolicy: wait-for-setup`). A `dev` tab is opened with
 `corepack pnpm dev`.
 
+If Orca already had this repo registered before `orca.yaml` existed, it may have saved its own
+setup command (for example `pnpm install`) in the repo's settings, and that local command wins over
+the file. Clear the setup script in Orca's repository settings so `orca.yaml` applies.
+
 **Without Orca.**
 
 ```sh
