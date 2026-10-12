@@ -11,7 +11,7 @@
     "dev": "node scripts/run.ts dev",
     "build": "next build",
     "start": "node scripts/run.ts start",
-    "check": "pnpm check:biome && pnpm typecheck && pnpm test && pnpm check:boundaries && pnpm knip && pnpm check:spec",
+    "check": "pnpm check:biome && pnpm typecheck && pnpm test && pnpm check:boundaries && pnpm knip && pnpm check:spec && node scripts/agent-hooks.ts certify",
     "check:biome": "biome check .",
     "typecheck": "tsc --noEmit",
     "test": "node --test 'src/**/*.test.ts' 'scripts/**/*.test.ts'",

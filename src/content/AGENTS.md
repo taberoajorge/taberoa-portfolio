@@ -1,0 +1,1 @@
+All visible text. `en.ts` defines the shape (`Content`); `es.ts` must match it, so the typechecker catches a missing key. Language-free data (links, repos, stack, domain) goes in `site.ts`. Keep sentences short and true to each project's repo.

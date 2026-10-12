@@ -35,31 +35,31 @@
 
 ## 7. Worktrees y Orca
 
-- [ ] 7.1 Crear `.node-version` (24), `engines.node` y `scripts/bootstrap.sh` (POSIX). Se verifica:
+- [x] 7.1 Crear `.node-version` (24), `engines.node` y `scripts/bootstrap.sh` (POSIX). Se verifica:
   - en un worktree nuevo, termina con código 0, deja `node_modules` y `core.hooksPath=.githooks` e imprime la URL;
   - con Node 22 activo, falla sin instalar nada;
   - con otro `core.hooksPath`, se detiene.
-- [ ] 7.2 Crear `scripts/port.ts` y `scripts/run.ts` con un test (ruta → puerto estable, 3302 para el checkout principal y detección de colisiones con worktrees simulados). Hacer que `pnpm dev` y `pnpm start` los usen. Se verifica con el test y con dos worktrees reales sirviendo a la vez en puertos distintos.
+- [x] 7.2 Crear `scripts/port.ts` y `scripts/run.ts` con un test (ruta → puerto estable, 3302 para el checkout principal y detección de colisiones con worktrees simulados). Hacer que `pnpm dev` y `pnpm start` los usen. Se verifica con el test y con dos worktrees reales sirviendo a la vez en puertos distintos.
 - [ ] 7.3 Crear `orca.yaml` (`scripts.setup`, `setupAgentStartupPolicy` en el nivel superior, `defaultTabs`) y `docs/worktrees.md`. Se verifica creando un worktree con Orca (`orca` CLI): el bootstrap se ejecuta antes de que arranque el agente.
 
 ## 8. Commits, hooks de Git, CI y entrega
 
-- [ ] 8.1 Crear `scripts/commit-msg.ts` con su test (formato convencional, atribución y casos permitidos de revert, fixup y squash), y `.githooks/commit-msg` y `pre-push`. Se verifica cuando el test pasa, un commit con `Co-Authored-By: Claude` se rechaza en local y un push con un test roto se cancela.
-- [ ] 8.2 Crear `scripts/delivery.ts` (`branch`, `pr-check`, `pr-create` y `merge`) con un test de la validación de título y cuerpo y de la frescura respecto a `origin/main`, y añadir los scripts `delivery:*`. Se verifica con el test y con `pr-check` sobre un cuerpo válido y otro sin `Verification`.
-- [ ] 8.3 Crear `.github/workflows/check.yml` (acciones fijadas por SHA, solo lectura, check, build, audit, gitleaks fijado y commit-msg sobre los commits del PR), `.github/pull_request_template.md`, `.github/dependabot.yml` y `.github/workflows/copilot-setup-steps.yml`. Se verifica cuando `actionlint` (vía `pnpm dlx` o binario) no muestra errores y el workflow de Copilot tiene el job `copilot-setup-steps`.
+- [x] 8.1 Crear `scripts/commit-msg.ts` con su test (formato convencional, atribución y casos permitidos de revert, fixup y squash), y `.githooks/commit-msg` y `pre-push`. Se verifica cuando el test pasa, un commit con `Co-Authored-By: Claude` se rechaza en local y un push con un test roto se cancela.
+- [x] 8.2 Crear `scripts/delivery.ts` (`branch`, `pr-check`, `pr-create` y `merge`) con un test de la validación de título y cuerpo y de la frescura respecto a `origin/main`, y añadir los scripts `delivery:*`. Se verifica con el test y con `pr-check` sobre un cuerpo válido y otro sin `Verification`.
+- [x] 8.3 Crear `.github/workflows/check.yml` (acciones fijadas por SHA, solo lectura, check, build, audit, gitleaks fijado y commit-msg sobre los commits del PR), `.github/pull_request_template.md`, `.github/dependabot.yml` y `.github/workflows/copilot-setup-steps.yml`. Se verifica cuando `actionlint` (vía `pnpm dlx` o binario) no muestra errores y el workflow de Copilot tiene el job `copilot-setup-steps`.
 
 ## 9. Espacio de trabajo para agentes
 
-- [ ] 9.1 Crear `AGENTS.md` raíz (propósito, mapa, comandos, reglas de arquitectura y contra el código de relleno, OpenSpec, commits y PRs, prohibiciones, confianza de hooks) y los `AGENTS.md` de una a cinco líneas en cada carpeta de `src/*` y `scripts/`. Crear también `CLAUDE.md` (`@AGENTS.md`) y `.gemini/settings.json` (`context.fileName`). Se verifica cuando cada carpeta de `src/` tiene su `AGENTS.md` y el raíz ocupa menos de 32 KiB.
-- [ ] 9.2 Crear las skills canónicas en `.agents/skills/` (`worktree-bootstrap`, `orca-cli`, `orchestration`, `add-figure`, `verify-ui`) y los adaptadores `claude-*` en `.claude/skills/`. Comprobar con Context7 cómo tratan OpenCode y Copilot los nombres duplicados, y generar las skills de OpenSpec con `openspec init --tools` para los clientes compatibles. Se verifica cuando cada skill tiene un frontmatter válido, los nombres no se repiten entre `.agents/skills` y `.claude/skills` y la decisión del prefijo queda anotada en el diseño.
-- [ ] 9.3 Crear `scripts/agent-hooks.ts` (normalización por cliente, contexto de inicio, guardas, certificado en `.git/agent-hooks/`, `certify`) con tests por cliente y evento, y añadir el paso `certify` al final de `pnpm check`. Se verifica con tests que cubren:
+- [x] 9.1 Crear `AGENTS.md` raíz (propósito, mapa, comandos, reglas de arquitectura y contra el código de relleno, OpenSpec, commits y PRs, prohibiciones, confianza de hooks) y los `AGENTS.md` de una a cinco líneas en cada carpeta de `src/*` y `scripts/`. Crear también `CLAUDE.md` (`@AGENTS.md`) y `.gemini/settings.json` (`context.fileName`). Se verifica cuando cada carpeta de `src/` tiene su `AGENTS.md` y el raíz ocupa menos de 32 KiB.
+- [x] 9.2 Crear las skills canónicas en `.agents/skills/` (`worktree-bootstrap`, `orca-cli`, `orchestration`, `add-figure`, `verify-ui`) y los adaptadores `claude-*` en `.claude/skills/`. Comprobar con Context7 cómo tratan OpenCode y Copilot los nombres duplicados, y generar las skills de OpenSpec con `openspec init --tools` para los clientes compatibles. Se verifica cuando cada skill tiene un frontmatter válido, los nombres no se repiten entre `.agents/skills` y `.claude/skills` y la decisión del prefijo queda anotada en el diseño.
+- [x] 9.3 Crear `scripts/agent-hooks.ts` (normalización por cliente, contexto de inicio, guardas, certificado en `.git/agent-hooks/`, `certify`) con tests por cliente y evento, y añadir el paso `certify` al final de `pnpm check`. Se verifica con tests que cubren:
   - editar `src/iso` se bloquea;
   - un `push --force` a `main` se bloquea;
   - un commit con atribución se bloquea;
   - `Stop` sin certificado pide checks;
   - `Stop` con certificado del árbol actual deja terminar.
-- [ ] 9.4 Conectar los hooks de cada cliente: `.claude/settings.json`, `.codex/hooks.json`, `.agents/hooks.json` (formato de Antigravity), `.opencode/plugins/agent-hooks.ts` y `.gemini/settings.json`, sin copias en `.cursor` ni en `.github/hooks`. Se verifica pasando un evento de ejemplo de cada cliente por el script en un test de integración, y con Claude Code en real: intentar editar `src/iso/iso-kit.ts` queda bloqueado.
-- [ ] 9.5 Completar `openspec/config.yaml` con el contexto del proyecto y las reglas de tareas. Se verifica con `openspec validate --all --strict`.
+- [x] 9.4 Conectar los hooks de cada cliente: `.claude/settings.json`, `.codex/hooks.json`, `.agents/hooks.json` (formato de Antigravity), `.opencode/plugins/agent-hooks.ts` y `.gemini/settings.json`, sin copias en `.cursor` ni en `.github/hooks`. Se verifica pasando un evento de ejemplo de cada cliente por el script en un test de integración, y con Claude Code en real: intentar editar `src/iso/iso-kit.ts` queda bloqueado.
+- [x] 9.5 Completar `openspec/config.yaml` con el contexto del proyecto y las reglas de tareas. Se verifica con `openspec validate --all --strict`.
 
 ## 10. Repo público
 

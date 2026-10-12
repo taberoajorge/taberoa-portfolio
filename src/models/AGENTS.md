@@ -1,0 +1,1 @@
+Pure, seeded models of what each project does (Ralph's loop, LoopForge's lanes, the audio pipeline). No React, Next or other `src/` imports. Every rule the figures show is tested here with `node --test`.

@@ -103,7 +103,12 @@ src/
 - Canónicas en `.agents/skills/<nombre>/SKILL.md`. Las leen Codex, Cursor, OpenCode, Antigravity, Copilot, Windsurf y Gemini.
 - Claude Code solo lee `.claude/skills`, así que necesita adaptadores.
 - **Problema de nombres duplicados:** Cursor, OpenCode y Copilot leen también `.claude/skills`, y OpenCode exige nombres únicos. Decisión: los adaptadores de Claude llevan el prefijo `claude-` en el nombre del frontmatter y solo remiten a la canónica. La duplicación visible queda acotada a una línea por skill.
-- Se verifica en la implementación con Context7 sobre la documentación de OpenCode y Copilot. Si ignoran los nombres duplicados entre directorios, se quita el prefijo.
+- **Comprobado el 2026-10-12** con la documentación oficial (Exa; Context7 no estaba conectado en la sesión):
+  - OpenCode lee `.claude/skills` y `.agents/skills`, avisa con `WARN duplicate skill name` y se queda con la última fuente;
+  - Copilot y VS Code leen `.github/skills`, `.claude/skills` y `.agents/skills`, y exigen que `name` coincida con el nombre de la carpeta.
+
+  Por eso **se mantiene el prefijo**: cada adaptador vive en `.claude/skills/claude-<nombre>/` con `name: claude-<nombre>`.
+- **Gemini CLI:** además de `SessionStart` y `BeforeTool`, se usa `AfterAgent`, cuyo `deny` reenvía el motivo como un nuevo turno. Así Gemini también pide `pnpm check` al terminar.
 
 **Hooks, con un solo script (`scripts/agent-hooks.ts`):**
 

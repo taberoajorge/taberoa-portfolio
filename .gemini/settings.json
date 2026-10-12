@@ -1,0 +1,44 @@
+{
+  "context": {
+    "fileName": ["AGENTS.md"]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "name": "context",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/agent-hooks.ts\" hook gemini SessionStart",
+            "timeout": 10000
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "run_shell_command|write_file|replace",
+        "hooks": [
+          {
+            "type": "command",
+            "name": "guards",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/agent-hooks.ts\" hook gemini BeforeTool",
+            "timeout": 10000
+          }
+        ]
+      }
+    ],
+    "AfterAgent": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "name": "check-certificate",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/agent-hooks.ts\" hook gemini AfterAgent",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  }
+}

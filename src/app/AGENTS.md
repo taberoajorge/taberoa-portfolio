@@ -1,0 +1,1 @@
+Routes and Next special files only (layouts, pages, sitemap, robots, icons, llms.txt, OG images). Import only from `src/site` and `src/content`. Each language has its own root layout so `<html lang>` is static.

@@ -1,0 +1,30 @@
+{
+  "taberoa-portfolio": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "node \"$(git rev-parse --show-toplevel)/scripts/agent-hooks.ts\" hook antigravity PreInvocation",
+        "timeout": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/agent-hooks.ts\" hook antigravity PreToolUse",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node \"$(git rev-parse --show-toplevel)/scripts/agent-hooks.ts\" hook antigravity Stop",
+        "timeout": 10
+      }
+    ]
+  }
+}

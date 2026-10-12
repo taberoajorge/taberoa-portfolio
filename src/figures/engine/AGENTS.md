@@ -1,0 +1,1 @@
+The motion engine shared by every figure: `Director` (eased segments on one frame loop), `Camera`, DOM writes that skip unchanged values, the `Rig` base class, `FigureShell` (controls, stepper, guide, layout) and the steps UI. Changes here affect all three figures: check each one with Play.

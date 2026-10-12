@@ -13,6 +13,10 @@ const ATTRIBUTION = [
   /🤖/u,
 ];
 
+// The first line of a text that credits an AI tool, if any.
+export const attributed = (text: string) =>
+  text.split('\n').find((line) => ATTRIBUTION.some((pattern) => pattern.test(line)));
+
 export function problems(message: string): string[] {
   const text = message
     .split('\n')
@@ -25,9 +29,8 @@ export function problems(message: string): string[] {
     found.push(
       `"${title}" is not a Conventional Commit. Use type(scope): subject, with type one of ${TYPES.replaceAll('|', ', ')}; e.g. "fix(figures): keep the camera on the gantry".`,
     );
-  for (const line of text.split('\n'))
-    if (ATTRIBUTION.some((pattern) => pattern.test(line)))
-      found.push(`Remove the AI attribution "${line.trim()}"; commits name people only.`);
+  const line = attributed(text);
+  if (line) found.push(`Remove the AI attribution "${line.trim()}"; commits name people only.`);
   return found;
 }
 

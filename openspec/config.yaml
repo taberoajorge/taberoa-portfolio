@@ -5,24 +5,22 @@ context: |
   All artifacts must be written in es.
   Keep OpenSpec structural headings and SHALL/MUST keywords in English.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Project: Alex Taberoa's portfolio. Two static pages (/ and /es) on Next 15 App Router, React 19,
+  Tailwind 3, Biome, pnpm, deployed on Vercel at https://taberoa.com. Three open-source projects
+  (Ralph, LoopForge, Audio Cleaner) are drawn as isometric machines that run step by step, on a
+  shared engine (src/figures/engine: Director, camera, Rig, FigureShell). Text lives in
+  src/content (en.ts defines the shape, es.ts must match). src/iso is a vendored kit: never edit it.
+  Folder rules and boundaries are in AGENTS.md and checked by pnpm check.
+  Quality bar: Lighthouse 100 in all four categories on mobile and desktop; no AI slop (no dead
+  exports, no one-implementation abstractions, comments say why).
 
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+rules:
+  proposal:
+    - 'Say what the visitor or the maintainer gets, and what stays the same.'
+  design:
+    - 'Prefer the existing engine, parts and content structure; justify any new abstraction by its real users.'
+  tasks:
+    - 'Each task names the files it touches and ends with "Se verifica …": the command, check or screenshot that proves it.'
+    - 'Keep implementation and verification in the same task, but never mark a task done until its verification has run and passed.'
+    - 'Visual work is verified on a production build, at 1440 px and 390 px, with reduced motion.'
+    - 'Outward-facing steps (pushes, repos, deployments, domains) go last and need the owner''s go-ahead.'

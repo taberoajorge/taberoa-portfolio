@@ -1,0 +1,1 @@
+One folder per project: `view.ts` (sizes and projection), `geometry.ts` (paths, built once), `rig.ts` (a `Rig` subclass: plan, write, reset), `Figure.tsx` (the drawing and a `FigureShell`). Shared code is in `engine/` and `parts/`; never import `src/site` or `src/app`. Load the `add-figure` skill before changing one.

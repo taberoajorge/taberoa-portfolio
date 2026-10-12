@@ -1,0 +1,1 @@
+Repo tooling, run by Node directly (TypeScript type stripping, no build step): bootstrap, ports, `checks/` (boundaries, parity, perf), commit and delivery rules, agent hooks. Each script with logic has a `*.test.ts` next to it. Print with `process.stdout`/`stderr`.
