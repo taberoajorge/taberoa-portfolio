@@ -66,6 +66,7 @@ const START = initial();
 
 // What the page shows before the live figure loads: the plate's corner, its legend and readout.
 export const PLATE = {
+  option: 3, // worktrees the run starts with
   fig: 'Fig 2',
   marks: ['lit', 'raised', 'edge'] as KeyMark[],
   readout: (c: Content) =>

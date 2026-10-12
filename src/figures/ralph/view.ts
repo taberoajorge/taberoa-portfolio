@@ -83,6 +83,7 @@ export const P = fitProjection(
 
 // What the page shows before the live figure loads: the plate's corner, its legend and readout.
 export const PLATE = {
+  option: 0.3, // agent clumsiness the run starts with
   fig: 'Fig 1',
   marks: ['lit', 'raised', 'dotted'] as KeyMark[],
   readout: (c: Content) => c.ralph.fig.idle(5, 30),

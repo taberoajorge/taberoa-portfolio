@@ -1,7 +1,7 @@
 import type { Content } from '../../content';
 import type { KeyMark } from '../../iso/iso-kit';
 import { boxCorners, fitProjection, type Plan, type Point3 } from '../../iso/iso-kit';
-import { duration, TAKE } from '../../models/audio/model';
+import { duration, type PresetName, TAKE } from '../../models/audio/model';
 
 // World units ≈ 1 px. x runs along the tape (time), y across it, z up.
 export const WIDTH = 640;
@@ -61,6 +61,7 @@ export const P = fitProjection(
 
 // What the page shows before the live figure loads: the plate's corner, its legend and readout.
 export const PLATE = {
+  option: 'natural' as PresetName,
   fig: 'Fig 3',
   marks: ['raised', 'dim', 'lit'] as KeyMark[],
   readout: (c: Content) => c.audio.fig.say.waiting,

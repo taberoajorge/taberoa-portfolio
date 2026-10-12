@@ -28,7 +28,7 @@ React 19, Tailwind 3, Biome, pnpm. Deployed on Vercel at https://taberoa.com.
 | `src/figures/engine` | The shared motion engine: `Director`, camera, DOM writes, `Rig` base class, `FigureShell`, steps UI. |
 | `src/figures/parts` | Machine parts every figure shares (`benchOf`/`Bench`, `boxOf`). |
 | `src/figures` | `ProjectFigure.tsx` (what the site renders: the static figure with its poster) and `Deferred.tsx` (swaps in the live figure after load). |
-| `src/figures/<project>` | One figure: `view.ts` (sizes, `PLATE`), `geometry.ts` (paths), `rig.ts` (choreography), `Figure.tsx` (the live figure, loaded on demand). |
+| `src/figures/<project>` | One figure: `view.ts` (sizes, `PLATE`), `geometry.ts` (paths), `rig.ts` (choreography), `options.tsx` (its own controls, also rendered inert in the static figure), `Figure.tsx` (the live figure, loaded on demand). |
 | `src/iso` | The vendored /anatomy kit. Never edit it; re-copy from the skill and note the version. |
 | `scripts/` | Repo tooling: bootstrap, ports, checks, commit and delivery rules, agent hooks. |
 | `openspec/` | Specs (`specs/`) and changes (`changes/`). |

@@ -34,6 +34,7 @@ import {
   TRAY_ART,
   thresholdOf,
 } from './geometry';
+import { Options } from './options';
 import { RalphRig } from './rig';
 import { CARD_PITCH, HEIGHT, LOAD_X, P, PLATE, STACK_Z, WIDTH } from './view';
 
@@ -199,23 +200,10 @@ export function RalphFigure({ lang, info }: { lang: Lang; info: ReactNode }) {
       guide={content[lang].guide}
       info={info}
       keys={keysOf(PLATE.marks, t.fig.keys)}
-      option={0.3}
+      option={PLATE.option}
       makeRig={(io) => new RalphRig(io)}
       drawing={(rig) => <Drawing r={rig.r} label={t.fig.label} steps={t.steps} />}
-      controls={({ option, reset }) => (
-        <label>
-          {t.clumsiness}
-          <input
-            type="range"
-            min={0.1}
-            max={0.95}
-            step={0.05}
-            value={option}
-            onChange={(e) => reset(Number(e.target.value))}
-          />
-          <output>{Math.round(option * 100)}%</output>
-        </label>
-      )}
+      controls={({ option, reset }) => <Options t={t} option={option} reset={reset} />}
     />
   );
 }

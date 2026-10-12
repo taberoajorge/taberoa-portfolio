@@ -29,10 +29,13 @@ body {
     outline-offset: 2px;
   }
 
-  /* Controls under a figure plate */
+  /* Controls above a figure plate: the run (play, step, reset), then the figure's own setting. */
   .fig-controls {
     @apply flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider;
     color: var(--anatomy-text);
+  }
+  .fig-actions {
+    @apply mr-auto flex gap-2;
   }
   .fig-controls button {
     @apply px-3 py-1.5 transition-colors;
@@ -46,11 +49,24 @@ body {
     color: var(--anatomy-card);
     background: var(--anatomy-strong);
   }
-  .fig-controls button:disabled {
+  .fig-controls button:disabled,
+  .fig-controls input:disabled {
     @apply cursor-not-allowed opacity-40;
   }
-  .fig-controls label {
-    @apply ml-auto flex items-center gap-2;
+  /* One choice out of a few: joined segments of equal width. */
+  .fig-options {
+    @apply flex;
+    box-shadow: 0 0 0 1px var(--anatomy-mid);
+  }
+  .fig-options button {
+    @apply flex-1 whitespace-nowrap;
+    box-shadow: none;
+  }
+  .fig-options button + button {
+    border-left: 1px solid var(--anatomy-mid);
+  }
+  .fig-range {
+    @apply flex items-center gap-2;
   }
   .fig-controls input[type="range"] {
     accent-color: var(--anatomy-strong);
@@ -58,6 +74,37 @@ body {
   .fig-controls output {
     @apply w-9 text-right tabular-nums;
     color: var(--anatomy-strong);
+  }
+  @media (pointer: coarse) {
+    .fig-controls button,
+    .fig-controls input[type="range"] {
+      min-height: 44px;
+    }
+  }
+  /* Phones: the run as three equal buttons, each setting on its own full-width row. */
+  @media (max-width: 640px) {
+    .fig-controls {
+      @apply grid gap-2;
+    }
+    .fig-actions {
+      @apply mr-0 grid grid-cols-3;
+    }
+    /* "Siguiente paso" must fit a third of a 360 px screen on one line */
+    .fig-controls button {
+      @apply whitespace-nowrap px-1 tracking-normal;
+    }
+    .fig-options {
+      @apply grid auto-cols-fr grid-flow-col;
+    }
+    .fig-range {
+      @apply grid grid-cols-[1fr_auto] gap-x-2 gap-y-0;
+    }
+    .fig-range input {
+      @apply col-span-2 w-full;
+    }
+    .fig-range output {
+      @apply col-start-2 row-start-1;
+    }
   }
 
   .link {
@@ -378,4 +425,72 @@ body {
 }
 .rf-tag[data-minor]:not([data-on]) {
   display: none;
+}
+
+/* Phones: the steps as numbered dots on a line, the current step's name under them. */
+.rf-steps-now {
+  display: none;
+}
+@media (max-width: 640px) {
+  .rf-steps {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 0;
+  }
+  .rf-steps li {
+    position: relative;
+    justify-content: center;
+  }
+  .rf-steps li + li::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    left: -50%;
+    height: 1px;
+    margin: 0;
+    background: var(--anatomy-mid);
+  }
+  .rf-steps button {
+    position: relative;
+    z-index: 1; /* above the connector lines, which reach into the previous step */
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .rf-steps i {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--anatomy-mid);
+    background: var(--anatomy-card);
+    color: var(--anatomy-strong);
+    font-size: 12px;
+  }
+  .rf-steps button[aria-current="step"] {
+    box-shadow: none;
+  }
+  .rf-steps button[aria-current="step"] i {
+    border-color: var(--anatomy-strong);
+    background: var(--anatomy-strong);
+    color: var(--anatomy-card);
+  }
+  .rf-step-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .rf-steps-now {
+    display: block;
+    margin: -4px 0 0;
+    text-align: center;
+    color: var(--anatomy-strong);
+    font: 600 14px/1.3 ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
 }
