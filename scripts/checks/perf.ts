@@ -73,10 +73,11 @@ function problems(report: Report, device: string, ci: boolean): string[] {
     }
   }
   const metric = (id: string) => report.audits[id]?.numericValue ?? 0;
-  const lcpBudget = BUDGET.lcpMs[device as keyof typeof BUDGET.lcpMs];
+  // Shared CI runners have noisy CPUs: timing budgets are checked locally and against production.
+  const lcpBudget = ci ? Infinity : BUDGET.lcpMs[device as keyof typeof BUDGET.lcpMs];
   if (metric('largest-contentful-paint') > lcpBudget)
     found.push(`LCP ${Math.round(metric('largest-contentful-paint'))} ms > ${lcpBudget} ms`);
-  if (device === 'mobile' && metric('total-blocking-time') > BUDGET.tbtMs)
+  if (!ci && device === 'mobile' && metric('total-blocking-time') > BUDGET.tbtMs)
     found.push(`TBT ${Math.round(metric('total-blocking-time'))} ms > ${BUDGET.tbtMs} ms`);
   if (Number(metric('cumulative-layout-shift').toFixed(3)) > BUDGET.cls)
     found.push(`CLS ${metric('cumulative-layout-shift').toFixed(3)} > ${BUDGET.cls}`);

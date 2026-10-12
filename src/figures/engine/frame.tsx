@@ -48,7 +48,19 @@ export function Controls({
   return (
     <div className="fig-controls">
       <button type="button" onClick={onPlay} disabled={finished || !onPlay}>
-        {playing ? t.pause : t.play}
+        {onPlay ? (
+          playing ? (
+            t.pause
+          ) : (
+            t.play
+          )
+        ) : (
+          // the static figure shows what the live one will: playing, unless motion is reduced
+          <>
+            <span className="rf-if-motion">{t.pause}</span>
+            <span className="rf-if-still">{t.play}</span>
+          </>
+        )}
       </button>
       <button type="button" onClick={onNext} disabled={finished || !onNext}>
         {t.next}

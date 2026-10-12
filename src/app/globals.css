@@ -71,7 +71,18 @@ body {
 }
 
 
+/* The static figure's play button carries the label the live one will show after the swap. */
+.rf-if-still {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .rf-if-motion {
+    display: none;
+  }
+  .rf-if-still {
+    display: inline;
+  }
   .rf-stage [data-tag] {
     animation: none;
   }

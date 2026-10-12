@@ -7,7 +7,7 @@ Que el portafolio cargue lo más rápido posible en móvil y en escritorio, sea 
 ## ADDED Requirements
 
 ### Requirement: Lighthouse al máximo
-Sobre el build de producción, Lighthouse SHALL dar 100 en Performance, Accessibility, Best Practices y SEO, para `/` y `/es`, en móvil y en escritorio. Esto se mide en local con `pnpm perf`. En CI, la variación entre máquinas MUST tolerarse solo en Performance (umbral ≥ 95); las otras tres categorías MUST dar 100.
+Sobre el build de producción, Lighthouse SHALL dar 100 en Performance, Accessibility, Best Practices y SEO, para `/` y `/es`, en móvil y en escritorio. Esto se mide en local con `pnpm perf`. En CI, la variación entre máquinas MUST tolerarse solo en Performance (umbral ≥ 95) y en los presupuestos de tiempo (LCP y TBT), que se comprueban en local y contra producción; las otras tres categorías MUST dar 100, y el HTML, el JS y el CLS MUST cumplir sus presupuestos.
 
 #### Scenario: Medición local
 - **WHEN** se ejecuta `pnpm perf` contra `pnpm build && pnpm start`
