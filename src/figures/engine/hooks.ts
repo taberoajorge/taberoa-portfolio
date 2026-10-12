@@ -27,6 +27,7 @@ export function useDirector<P extends Pose>(
         tag.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
         tag.toggleAttribute('data-out', out);
         tag.toggleAttribute('data-below', y < 64); // no room above: hang the label below its point
+        tag.setAttribute('data-placed', ''); // shown only once placed, so placing it is not a layout shift
       });
     },
     [director, root, view],

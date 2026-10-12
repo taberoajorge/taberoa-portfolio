@@ -59,6 +59,12 @@ function lighthouse(url: string, device: (typeof DEVICES)[number]): Report {
   return JSON.parse(readFileSync(out, 'utf8'));
 }
 
+// The run with the median Performance score: one slow runner hiccup does not fail CI.
+const median = (reports: Report[]) =>
+  [...reports].sort((a, b) => a.categories.performance.score - b.categories.performance.score)[
+    reports.length >> 1
+  ];
+
 // Everything that fails for one page on one device.
 function problems(report: Report, device: string, ci: boolean): string[] {
   const found: string[] = [];
@@ -114,7 +120,7 @@ async function main() {
     const url = new URL(path, base).href;
     const html = await htmlProblems(url);
     for (const device of DEVICES) {
-      const report = lighthouse(url, device);
+      const report = median(Array.from({ length: ci ? 3 : 1 }, () => lighthouse(url, device)));
       const scores = CATEGORIES.map((id) => Math.round(report.categories[id].score * 100)).join(
         '/',
       );
