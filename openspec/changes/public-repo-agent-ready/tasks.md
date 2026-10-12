@@ -64,7 +64,7 @@
 ## 10. Repo público
 
 - [ ] 10.1 Reescribir el README en inglés y actualizar `LICENSE` (MIT para el código; textos, CV y marca excluidos) y `.gitignore` (shots, artifacts, estado de hooks, ajustes locales de los clientes, `.env*`). Se verifica cuando `git ls-files` no muestra archivos locales ni generados y los comandos del README funcionan tal cual.
-- [ ] 10.2 Escanear todo el historial con gitleaks. Se verifica sin hallazgos o con los hallazgos explicados (el CV con teléfono es una decisión del dueño, no un secreto).
+- [x] 10.2 Escanear todo el historial con gitleaks. Se verifica sin hallazgos o con los hallazgos explicados (el CV con teléfono es una decisión del dueño, no un secreto).
 
 ## 11. Rendimiento
 
