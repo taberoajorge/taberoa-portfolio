@@ -177,7 +177,8 @@ body {
   content: "";
   position: absolute;
   left: -0.5px;
-  bottom: 0;
+  top: 0;
+  transform: translateY(-100%);
   width: 1px;
   height: 16px;
   background: var(--anatomy-hi);
@@ -192,11 +193,13 @@ body {
   border-radius: 50%;
   background: var(--anatomy-hi);
 }
+/* Labels sit above their point (or below, near the top edge) by transform only: their layout box
+   never moves, so growing with the active step or flipping is never a layout shift. */
 .rf-tag-box {
   position: absolute;
   left: 0;
-  bottom: 16px;
-  transform: translateX(-50%);
+  top: 0;
+  transform: translate(-50%, calc(-100% - 16px));
   display: grid;
   grid-template-columns: auto 1fr;
   column-gap: 6px;
@@ -362,12 +365,10 @@ body {
   opacity: 0.35;
 }
 .rf-tag[data-below]::before {
-  top: 0;
-  bottom: auto;
+  transform: none;
 }
 .rf-tag[data-below] .rf-tag-box {
-  top: 16px;
-  bottom: auto;
+  transform: translate(-50%, 16px);
 }
 /* Phones: only the active step's label; the stepper above picks the others. */
 @media (max-width: 560px) {
