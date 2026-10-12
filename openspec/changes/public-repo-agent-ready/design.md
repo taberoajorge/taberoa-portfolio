@@ -232,6 +232,7 @@ El MCP de Vercel necesita autorización OAuth, que no está disponible en esta s
 - **El 100 en Performance móvil depende del entorno de laboratorio.** → El presupuesto apunta a un LCP ≤ 1.2 s con margen. En CI se acepta 95 o más en Performance; las demás categorías deben dar 100.
 - **Póster y figura viva podrían diferir.** → El póster se genera con el mismo componente `Drawing` en su estado inicial, así que no puede divergir.
 - **Mover el dominio deja a `todo-app` sin `taberoa.com`.** → Es la decisión del dueño, y `todo-app` sigue en su URL `.vercel.app`.
+- **Cloudflare delante del apex.** Los nameservers de `taberoa.com` son de Cloudflare, y el apex pasa por su proxy. En producción, Cloudflare inyecta dos scripts: `email-decode.min.js` (Email Address Obfuscation, que además reescribe el enlace `mailto:`) y la baliza de Web Analytics (unos 10 KB). Con ellos, el JS de la primera carga sube a 117 KB, cuando el del sitio son unos 106. → El dueño decide en Cloudflare si desactiva esas dos funciones o pone el registro del apex en «DNS only», que es lo que recomienda Vercel. El repo no puede evitarlo.
 
 - **Paridad visual tras mover el código.** → Se toman instantáneas del HTML de `/` y `/es` (head, textos y JSON-LD) antes de mover nada y se comparan después. La hoja de contactos de cada figura con Play se compara a ojo.
 - **Knip y Next.** El route group y el middleware pueden dar falsos positivos. → Su configuración declara los puntos de entrada de Next. Lo que se ignore se anota con su motivo.
