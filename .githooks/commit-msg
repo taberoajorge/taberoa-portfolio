@@ -1,4 +1,9 @@
 #!/bin/sh
 set -eu
 cd "$(git rev-parse --show-toplevel)"
+# The checker is TypeScript run by Node itself, which needs Node 22.18 or later.
+node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 22 || (a === 22 && b >= 18) ? 0 : 1)' || {
+  echo "Node $(node -v) cannot run scripts/commit-msg.ts. Run \`fnm use\` (Node $(cat .node-version)) and commit again." >&2
+  exit 1
+}
 exec node scripts/commit-msg.ts "$1"
