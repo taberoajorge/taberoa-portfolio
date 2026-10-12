@@ -84,7 +84,7 @@
 
 ## 12. Despliegue (al final, con todo en verde; autorizado por el dueño)
 
-- [ ] 12.1 Confirmar `gh api user -q .login` = `taberoajorge`. Crear el repo público `taberoajorge/taberoa-portfolio`, hacer push de `main` y proteger la rama (check obligatorio y sin pushes forzados). Se verifica con `git remote get-url origin` y `gh api` de la protección.
+- [x] 12.1 Confirmar `gh api user -q .login` = `taberoajorge`. Crear el repo público `taberoajorge/taberoa-portfolio`, hacer push de `main` y proteger la rama (check obligatorio y sin pushes forzados). Se verifica con `git remote get-url origin` y `gh api` de la protección.
 - [ ] 12.2 Conectar el proyecto de Vercel `taberoa-portfolio` al repo (Node 24, pnpm, `main` de producción). Se verifica cuando el push a `main` genera un despliegue de producción con la metadata del commit de GitHub.
 - [ ] 12.3 Mover `taberoa.com` y `www.taberoa.com` de `todo-app` al portafolio, con `www` redirigiendo con 308 al apex. Se hace con la API de dominios del proyecto, nunca con `vercel domains rm`, y antes se ejecuta `vercel domains inspect taberoa.com`. Se verifica con `curl -I` en ambos (200 en el apex y 308 hacia el apex en `www`) y con `GET /v9/projects/<todo-app>/domains` sin esos dominios.
 - [ ] 12.4 Repetir `pnpm perf --url https://taberoa.com` y la paridad de head y JSON-LD contra producción. Se verifica cuando se cumplen los mismos umbrales que en local.
