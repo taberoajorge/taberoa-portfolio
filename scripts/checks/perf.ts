@@ -65,6 +65,13 @@ const median = (reports: Report[]) =>
     reports.length >> 1
   ];
 
+// The elements Lighthouse saw move, to say what to fix.
+const shifted = (report: Report) =>
+  (report.audits['layout-shifts']?.details?.items ?? [])
+    .map((item) => (item as { node?: { selector?: string } }).node?.selector)
+    .filter(Boolean)
+    .join(' | ');
+
 // Everything that fails for one page on one device.
 function problems(report: Report, device: string, ci: boolean): string[] {
   const found: string[] = [];
@@ -86,7 +93,9 @@ function problems(report: Report, device: string, ci: boolean): string[] {
   if (!ci && device === 'mobile' && metric('total-blocking-time') > BUDGET.tbtMs)
     found.push(`TBT ${Math.round(metric('total-blocking-time'))} ms > ${BUDGET.tbtMs} ms`);
   if (Number(metric('cumulative-layout-shift').toFixed(3)) > BUDGET.cls)
-    found.push(`CLS ${metric('cumulative-layout-shift').toFixed(3)} > ${BUDGET.cls}`);
+    found.push(
+      `CLS ${metric('cumulative-layout-shift').toFixed(3)} > ${BUDGET.cls}; shifted: ${shifted(report)}`,
+    );
   const blocking =
     report.audits['render-blocking-insight'] ?? report.audits['render-blocking-resources'];
   if (blocking?.details?.items?.length)
