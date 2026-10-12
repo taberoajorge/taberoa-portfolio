@@ -82,9 +82,30 @@ export function FigureShell<O, T extends FigText, R extends AnyRig<O, T>>({
   return (
     <FigureFrame
       info={info}
-      figure={
+      stepper={<Stepper steps={t.steps} at={at} label={guide.steps} onPick={pick} />}
+      controls={
+        <Controls
+          t={t}
+          playing={auto}
+          finished={ui.finished}
+          onPlay={() => {
+            director.playing = !auto;
+            director.consent = true;
+            setUi((u) => ({ ...u, playing: !auto, consent: true }));
+            kick();
+          }}
+          onNext={() => {
+            director.pending++;
+            director.consent = true;
+            kick();
+          }}
+          onReset={() => reset(ui.option)}
+        >
+          {controls({ rig: r, option: ui.option, reset })}
+        </Controls>
+      }
+      plate={
         <>
-          <Stepper steps={t.steps} at={at} label={guide.steps} onPick={pick} />
           <Plate
             fig={fig}
             title={t.fig.title}
@@ -103,25 +124,6 @@ export function FigureShell<O, T extends FigText, R extends AnyRig<O, T>>({
           <p ref={live} className="sr-only" aria-live="polite">
             {readout}
           </p>
-          <Controls
-            t={t}
-            playing={auto}
-            finished={ui.finished}
-            onPlay={() => {
-              director.playing = !auto;
-              director.consent = true;
-              setUi((u) => ({ ...u, playing: !auto, consent: true }));
-              kick();
-            }}
-            onNext={() => {
-              director.pending++;
-              director.consent = true;
-              kick();
-            }}
-            onReset={() => reset(ui.option)}
-          >
-            {controls({ rig: r, option: ui.option, reset })}
-          </Controls>
         </>
       }
       guide={<Guide steps={t.steps} at={at} t={guide} onPick={pick} />}

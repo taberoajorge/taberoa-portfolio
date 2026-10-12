@@ -4,7 +4,6 @@ import { memo, type ReactNode, type RefObject } from 'react';
 import { content, type Lang } from '../../content';
 import type { Point3 } from '../../iso/iso-kit';
 import { Dots, Line, Solid } from '../../iso/react/draw';
-import { PRESET_NAMES, type PresetName } from '../../models/audio/model';
 import { Layer as LayerOf, layerShift, Part } from '../engine/dom';
 import { keysOf } from '../engine/frame';
 import { FigureShell } from '../engine/shell';
@@ -25,6 +24,7 @@ import {
   spokesOf,
   woundOf,
 } from './geometry';
+import { Options } from './options';
 import { AudioRig, RAW_TAPE } from './rig';
 import { HEIGHT, P, PARK_X, PLATE, PRESET_ANGLES, WIDTH } from './view';
 
@@ -174,36 +174,13 @@ export function AudioFigure({ lang, info }: { lang: Lang; info: ReactNode }) {
       guide={content[lang].guide}
       info={info}
       keys={keysOf(PLATE.marks, t.fig.keys)}
-      option={'natural' as PresetName}
+      option={PLATE.option}
       makeRig={(io) => new AudioRig(io)}
       drawing={(rig) => (
         <Drawing r={rig.r} label={t.fig.label} knob={PRESET_ANGLES[1]} steps={t.steps} />
       )}
       controls={({ rig, option, reset }) => (
-        <span className="ml-auto flex flex-wrap gap-2">
-          <button type="button" onClick={() => reset(option)}>
-            {t.before}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              reset(option);
-              rig.skip();
-            }}
-          >
-            {t.after}
-          </button>
-          {PRESET_NAMES.map((name) => (
-            <button
-              key={name}
-              type="button"
-              aria-pressed={option === name}
-              onClick={() => reset(name)}
-            >
-              {name}
-            </button>
-          ))}
-        </span>
+        <Options t={t} option={option} reset={reset} skip={() => rig.skip()} />
       )}
     />
   );

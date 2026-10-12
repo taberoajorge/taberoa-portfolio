@@ -46,20 +46,26 @@ export function Stepper({
   onPick?: (i: number) => void; // absent in the static figure rendered before the live one loads
 }) {
   return (
-    <ol className="rf-steps" aria-label={label}>
-      {steps.map((step, i) => (
-        <li key={step.name}>
-          <button
-            type="button"
-            aria-current={i === at ? 'step' : undefined}
-            onClick={onPick && (() => onPick(i))}
-          >
-            <i>{i + 1}</i>
-            {step.name}
-          </button>
-        </li>
-      ))}
-    </ol>
+    <>
+      <ol className="rf-steps" aria-label={label}>
+        {steps.map((step, i) => (
+          <li key={step.name}>
+            <button
+              type="button"
+              aria-current={i === at ? 'step' : undefined}
+              onClick={onPick && (() => onPick(i))}
+            >
+              <i>{i + 1}</i>
+              <span className="rf-step-name">{step.name}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      {/* phones show only the numbers; the stepper buttons keep their names for screen readers */}
+      <p className="rf-steps-now" aria-hidden="true">
+        {steps[at].name}
+      </p>
+    </>
   );
 }
 

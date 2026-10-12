@@ -28,6 +28,7 @@ import {
   REVIEW_ART,
   SHUTTERS,
 } from './geometry';
+import { Options } from './options';
 import { BLOCKED, LoopForgeRig, rackAt } from './rig';
 import { HEIGHT, P, PLATE, STORIES, WIDTH } from './view';
 
@@ -188,18 +189,10 @@ export function LoopForgeFigure({ lang, info }: { lang: Lang; info: ReactNode })
       guide={content[lang].guide}
       info={info}
       keys={keysOf(PLATE.marks, t.fig.keys)}
-      option={3}
+      option={PLATE.option}
       makeRig={(io) => new LoopForgeRig(io)}
       drawing={(rig) => <Drawing r={rig.r} label={t.fig.label} steps={t.steps} />}
-      controls={({ option, reset }) => (
-        <span className="ml-auto flex gap-2">
-          {[1, 3].map((n) => (
-            <button key={n} type="button" aria-pressed={option === n} onClick={() => reset(n)}>
-              {t.lanes(n)}
-            </button>
-          ))}
-        </span>
-      )}
+      controls={({ option, reset }) => <Options t={t} option={option} reset={reset} />}
     />
   );
 }
