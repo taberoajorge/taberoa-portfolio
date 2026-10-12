@@ -5,7 +5,7 @@ import { port } from './port.ts';
 const [mode] = process.argv.slice(2);
 if (mode !== 'dev' && mode !== 'start') throw new Error('Use: node scripts/run.ts dev|start');
 const p = port();
-console.log(`http://localhost:${p}`);
+process.stdout.write(`http://localhost:${p}\n`);
 const args =
   mode === 'dev' ? ['dev', '--turbo', '--port', String(p)] : ['start', '--port', String(p)];
 spawn('next', args, { stdio: 'inherit' }).on('exit', (code) => process.exit(code ?? 1));

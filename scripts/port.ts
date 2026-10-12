@@ -44,4 +44,4 @@ export function port(cwd = process.cwd()) {
   return portOf(self);
 }
 
-if (import.meta.main) console.log(port());
+if (import.meta.main) process.stdout.write(`${port()}\n`);

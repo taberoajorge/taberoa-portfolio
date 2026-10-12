@@ -1,0 +1,16 @@
+#!/bin/sh
+# Blocks rewriting main and runs the full check and build before anything leaves this machine.
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+want=$(cut -d. -f1 .node-version)
+have=$(node -p 'process.versions.node.split(".")[0]')
+if [ "$have" != "$want" ]; then
+  echo "Node $have is active but .node-version pins $want. Run \`fnm use\` and push again, or push once with: fnm exec --using=$want git push ..." >&2
+  exit 1
+fi
+payload=$(cat)
+printf '%s\n' "$payload" | node scripts/delivery.ts pre-push
+# Deletion- and tag-only pushes carry no branch content to check or build.
+printf '%s\n' "$payload" | awk '$3 ~ /^refs\/heads\// && $2 !~ /^0+$/ { found = 1 } END { exit !found }' || exit 0
+corepack pnpm check
+corepack pnpm build

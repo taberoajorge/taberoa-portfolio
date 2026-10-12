@@ -59,9 +59,11 @@ function differs(lang: string, was: Snapshot, now: Snapshot) {
     const b = JSON.stringify(now[key], null, 1).split('\n');
     if (a.join() === b.join()) continue;
     changed = true;
-    console.error(`${lang} ${key} differs:`);
-    for (const line of a.filter((x) => !b.includes(x))) console.error(`  - ${line.trim()}`);
-    for (const line of b.filter((x) => !a.includes(x))) console.error(`  + ${line.trim()}`);
+    process.stderr.write(`${lang} ${key} differs:\n`);
+    for (const line of a.filter((x) => !b.includes(x)))
+      process.stderr.write(`  - ${line.trim()}\n`);
+    for (const line of b.filter((x) => !a.includes(x)))
+      process.stderr.write(`  + ${line.trim()}\n`);
   }
   return changed;
 }
@@ -79,9 +81,9 @@ async function main() {
     if (mode === 'save') {
       mkdirSync(DIR, { recursive: true });
       writeFileSync(file, `${JSON.stringify(now, null, 2)}\n`);
-      console.log(`saved ${file}`);
+      process.stdout.write(`saved ${file}\n`);
     } else if (differs(lang, JSON.parse(readFileSync(file, 'utf8')), now)) process.exitCode = 1;
-    else console.log(`${lang}: same as baseline`);
+    else process.stdout.write(`${lang}: same as baseline\n`);
   }
 }
 

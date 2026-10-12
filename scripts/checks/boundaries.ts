@@ -65,7 +65,7 @@ function sourcesUnder(root: string): Source[] {
 
 if (import.meta.main) {
   const found = violations(sourcesUnder('src'));
-  for (const line of found) console.error(line);
+  for (const line of found) process.stderr.write(`${line}\n`);
   if (found.length) process.exitCode = 1;
-  else console.log('boundaries: ok');
+  else process.stdout.write(`boundaries: ok\n`);
 }

@@ -18,7 +18,11 @@
     "check:boundaries": "node scripts/checks/boundaries.ts",
     "knip": "knip",
     "check:spec": "pnpm dlx @fission-ai/openspec@1.13.2 validate --all --strict",
-    "parity": "node scripts/checks/parity.ts"
+    "parity": "node scripts/checks/parity.ts",
+    "delivery:branch": "node scripts/delivery.ts branch",
+    "delivery:pr-check": "node scripts/delivery.ts pr-check",
+    "delivery:pr-create": "node scripts/delivery.ts pr-create",
+    "delivery:merge": "node scripts/delivery.ts merge"
   },
   "dependencies": {
     "lucide-react": "0.556.0",
