@@ -1,0 +1,7 @@
+# Orca runs the bootstrap when it creates a worktree and starts agents only once it is done.
+scripts:
+  setup: sh scripts/bootstrap.sh
+setupAgentStartupPolicy: wait-for-setup
+defaultTabs:
+  - title: dev
+    command: corepack pnpm dev
