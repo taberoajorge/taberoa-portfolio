@@ -1,4 +1,7 @@
+import type { Content } from '../../content';
+import type { KeyMark } from '../../iso/iso-kit';
 import { boxCorners, fitProjection, type Plan } from '../../iso/iso-kit';
+import { initial, isReady } from '../../models/loopforge/model';
 
 // World units ≈ 1 px. x runs queue → worktrees → main, y across the lanes, z up.
 export const WIDTH = 640;
@@ -58,3 +61,13 @@ export const P = fitProjection(
   HEIGHT,
   { pad: 26, azimuth: AZIMUTH },
 );
+
+const START = initial();
+
+// What the page shows before the live figure loads: the plate's corner, its legend and readout.
+export const PLATE = {
+  fig: 'Fig 2',
+  marks: ['lit', 'raised', 'edge'] as KeyMark[],
+  readout: (c: Content) =>
+    c.loopforge.fig.idle(START.stories.filter((s) => isReady(START.stories, s.id)).length, 3),
+};

@@ -1,3 +1,5 @@
+import type { Content } from '../../content';
+import type { KeyMark } from '../../iso/iso-kit';
 import { boxCorners, fitProjection, type Plan, type Point3 } from '../../iso/iso-kit';
 
 // World units ≈ 1 px. x runs along the bench (feed → test → done), y is depth, z is up.
@@ -78,3 +80,10 @@ export const P = fitProjection(
   HEIGHT,
   { pad: 26, azimuth: AZIMUTH },
 );
+
+// What the page shows before the live figure loads: the plate's corner, its legend and readout.
+export const PLATE = {
+  fig: 'Fig 1',
+  marks: ['lit', 'raised', 'dotted'] as KeyMark[],
+  readout: (c: Content) => c.ralph.fig.idle(5, 30),
+};

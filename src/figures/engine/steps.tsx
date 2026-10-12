@@ -43,7 +43,7 @@ export function Stepper({
   steps: StepText[];
   at: number;
   label: string;
-  onPick: (i: number) => void;
+  onPick?: (i: number) => void; // absent in the static figure rendered before the live one loads
 }) {
   return (
     <ol className="rf-steps" aria-label={label}>
@@ -52,7 +52,7 @@ export function Stepper({
           <button
             type="button"
             aria-current={i === at ? 'step' : undefined}
-            onClick={() => onPick(i)}
+            onClick={onPick && (() => onPick(i))}
           >
             <i>{i + 1}</i>
             {step.name}
@@ -73,7 +73,7 @@ export function Guide({
   steps: StepText[];
   at: number;
   t: GuideText;
-  onPick: (i: number) => void;
+  onPick?: (i: number) => void;
 }) {
   const step = steps[at];
   return (
@@ -99,10 +99,14 @@ export function Guide({
         })}
       </ul>
       <div className="rf-guide-nav">
-        <button type="button" onClick={() => onPick(at - 1)} disabled={at === 0}>
+        <button type="button" onClick={onPick && (() => onPick(at - 1))} disabled={at === 0}>
           ← {t.prev}
         </button>
-        <button type="button" onClick={() => onPick(at + 1)} disabled={at === steps.length - 1}>
+        <button
+          type="button"
+          onClick={onPick && (() => onPick(at + 1))}
+          disabled={at === steps.length - 1}
+        >
           {t.next} →
         </button>
       </div>

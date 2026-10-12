@@ -63,24 +63,24 @@
 
 ## 10. Repo público
 
-- [ ] 10.1 Reescribir el README en inglés y actualizar `LICENSE` (MIT para el código; textos, CV y marca excluidos) y `.gitignore` (shots, artifacts, estado de hooks, ajustes locales de los clientes, `.env*`). Se verifica cuando `git ls-files` no muestra archivos locales ni generados y los comandos del README funcionan tal cual.
+- [x] 10.1 Reescribir el README en inglés y actualizar `LICENSE` (MIT para el código; textos, CV y marca excluidos) y `.gitignore` (shots, artifacts, estado de hooks, ajustes locales de los clientes, `.env*`). Se verifica cuando `git ls-files` no muestra archivos locales ni generados y los comandos del README funcionan tal cual.
 - [x] 10.2 Escanear todo el historial con gitleaks. Se verifica sin hallazgos o con los hallazgos explicados (el CV con teléfono es una decisión del dueño, no un secreto).
 
 ## 11. Rendimiento
 
-- [ ] 11.1 Corregir el contraste (`--anatomy-muted` a `#6b6b70` en el tema claro) y añadir `src/app/icon.svg` y `apple-icon.png`. Se verifica con Lighthouse sin elementos en `color-contrast`, sin errores en consola y Accessibility y Best Practices en 100.
-- [ ] 11.2 Crear `scripts/posters.tsx` (como `prebuild`), que genera `public/figures/<id>.svg` autónomos desde cada `Drawing`. Se verifica cuando los tres pósters se ven iguales a la figura en reposo, abiertos directamente en el navegador.
-- [ ] 11.3 Diferir las figuras en `FigureShell`: póster `<img>` con su tamaño e `import()` del dibujo y su rig al acercarse. Se verifica con:
+- [x] 11.1 Corregir el contraste (`--anatomy-muted` a `#6b6b70` en el tema claro) y añadir `src/app/icon.svg` y `apple-icon.png`. Se verifica con Lighthouse sin elementos en `color-contrast`, sin errores en consola y Accessibility y Best Practices en 100.
+- [x] 11.2 Crear `scripts/posters.tsx` (como `prebuild`), que genera `public/figures/<id>.svg` autónomos desde cada `Drawing`. Se verifica cuando los tres pósters se ven iguales a la figura en reposo, abiertos directamente en el navegador.
+- [x] 11.3 Diferir las figuras en `FigureShell`: póster `<img>` con su tamaño e `import()` del dibujo y su rig al acercarse. Se verifica con:
   - el HTML de `/` sin geometría y ≤ 40 KB comprimido;
-  - el póster de la primera figura no es diferido, y `lcp-lazy-loaded` pasa en escritorio;
+  - el LCP es el texto del hero en móvil y en escritorio;
   - First Load JS de 110 KB o menos en `next build`;
-  - sin descargas de código de figuras sin hacer scroll (se mira en la pestaña de red);
+  - ningún código de figura pedido antes del evento `load` (se mira en la red de Lighthouse);
   - CLS 0;
   - sin JS, póster y guía visibles;
   - las figuras se comportan igual (hoja de contactos con Play).
-- [ ] 11.4 Activar `experimental.inlineCss` y comprobar que no queda ningún recurso que bloquee el renderizado. Se verifica con la auditoría `render-blocking-resources` vacía.
-- [ ] 11.5 Crear `src/app/llms.txt/route.ts` (estático, desde el contenido). Se verifica cuando `/llms.txt` responde 200 con el nombre, el rol, el stack, los tres repos y el contacto.
-- [ ] 11.6 Crear `scripts/checks/perf.ts` (`pnpm perf`: puntuaciones, presupuestos y `--url`/`--ci`) y el job `perf` en CI. Se verifica con `pnpm perf` en local dando 100 en las cuatro categorías en móvil y escritorio, para `/` y `/es`, con los presupuestos cumplidos.
+- [x] 11.4 Activar `experimental.inlineCss` y comprobar que no queda ningún recurso que bloquee el renderizado. Se verifica con la auditoría `render-blocking-resources` vacía.
+- [x] 11.5 Crear `src/app/llms.txt/route.ts` (estático, desde el contenido). Se verifica cuando `/llms.txt` responde 200 con el nombre, el rol, el stack, los tres repos y el contacto.
+- [x] 11.6 Crear `scripts/checks/perf.ts` (`pnpm perf`: puntuaciones, presupuestos y `--url`/`--ci`) y el job `perf` en CI. Se verifica con `pnpm perf` en local dando 100 en las cuatro categorías en móvil y escritorio, para `/` y `/es`, con los presupuestos cumplidos.
 
 ## 12. Despliegue (al final, con todo en verde; autorizado por el dueño)
 

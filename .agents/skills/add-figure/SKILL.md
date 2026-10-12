@@ -39,8 +39,14 @@ has `name`, `sub`, `title`, `what` and `map` (`"part = meaning"` lines for the g
   in a `<Part name>` so focus can dim the rest, `<StepTags>` at the end) and a `<FigureShell>` with
   `fig`, `t`, `guide`, `info`, `keys`, `option`, `makeRig`, `drawing` and `controls`.
 
-Then add the figure to `FIGURES` and `PROJECTS` (`src/site/Projects.tsx`, `src/content/site.ts`)
-and its repo to `REPOS`.
+Also export `PLATE` from `view.ts` (figure number, legend marks, the readout at rest) and export
+`Drawing` from `Figure.tsx`. Moving layers take their rest position with `<Layer rest={…}>` so the
+poster and the live figure match.
+
+Then register the figure in four places: `PROJECTS` and `REPOS` (`src/content/site.ts`), `VIEWS`
+(`src/figures/ProjectFigure.tsx`), `LIVE` (`src/figures/Deferred.tsx`) and `FIGURES`
+(`scripts/posters.tsx`). Run `pnpm posters` and open `public/figures/<id>.svg`: it must match the
+live figure at rest.
 
 ## 4. Motion
 

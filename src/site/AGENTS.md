@@ -1,1 +1,1 @@
-The sections of the page, metadata (`meta.ts`), JSON-LD (`jsonld.ts`) and the OG image (`og.tsx`). Server components; no text literals here, read them from `src/content`. Use a figure only through its `Figure.tsx`.
+The sections of the page, metadata (`meta.ts`), JSON-LD (`jsonld.ts`) and the OG image (`og.tsx`). Server components; no text literals here, read them from `src/content`. Show figures only through `src/figures/ProjectFigure`. `llms.ts` builds `/llms.txt` from the same content.

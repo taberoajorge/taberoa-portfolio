@@ -32,7 +32,7 @@ test('figures never reach into site or app', () => {
   );
 });
 
-test('site sees only a figure component', () => {
+test('site sees figures only through ProjectFigure', () => {
   assert.equal(
     one('src/site/Projects.tsx', "import { RalphRig } from '../figures/ralph/rig';").length,
     1,
@@ -42,7 +42,7 @@ test('site sees only a figure component', () => {
     1,
   );
   assert.deepEqual(
-    one('src/site/Projects.tsx', "import { RalphFigure } from '../figures/ralph/Figure';"),
+    one('src/site/Projects.tsx', "import { ProjectFigure } from '../figures/ProjectFigure';"),
     [],
   );
 });

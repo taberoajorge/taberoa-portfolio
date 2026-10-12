@@ -34,3 +34,4 @@ shots/
 *.swp
 *.swo
 npm-debug.log*
+public/figures/

@@ -1,15 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
-import type { ReactNode } from 'react';
 import { content, type Lang, PROJECTS, type ProjectId, REPOS } from '../content';
-import { AudioFigure } from '../figures/audio/Figure';
-import { LoopForgeFigure } from '../figures/loopforge/Figure';
-import { RalphFigure } from '../figures/ralph/Figure';
-
-const FIGURES: Record<ProjectId, (props: { lang: Lang; info: ReactNode }) => ReactNode> = {
-  ralph: RalphFigure,
-  loopforge: LoopForgeFigure,
-  audio: AudioFigure,
-};
+import { ProjectFigure } from '../figures/ProjectFigure';
 
 // The project card that sits beside its figure.
 function Info({ lang, id }: { lang: Lang; id: ProjectId }) {
@@ -43,14 +34,11 @@ export function Projects({ lang }: { lang: Lang }) {
         </h2>
         <p>{t.projectsLede}</p>
       </div>
-      {PROJECTS.map((id) => {
-        const Figure = FIGURES[id];
-        return (
-          <article key={id} id={id}>
-            <Figure lang={lang} info={<Info lang={lang} id={id} />} />
-          </article>
-        );
-      })}
+      {PROJECTS.map((id) => (
+        <article key={id} id={id}>
+          <ProjectFigure id={id} lang={lang} info={<Info lang={lang} id={id} />} />
+        </article>
+      ))}
     </section>
   );
 }

@@ -2,9 +2,10 @@
 
 import { memo, type ReactNode, type RefObject } from 'react';
 import { content, type Lang } from '../../content';
-import { translateAlong } from '../../iso/iso-kit';
+import { type Point3, translateAlong } from '../../iso/iso-kit';
 import { Line, Solid } from '../../iso/react/draw';
-import { Layer as LayerOf, Part } from '../engine/dom';
+import { Layer as LayerOf, layerShift, Part } from '../engine/dom';
+import { keysOf } from '../engine/frame';
 import { FigureShell } from '../engine/shell';
 import { StepTags, type StepText } from '../engine/steps';
 import {
@@ -34,21 +35,28 @@ import {
   thresholdOf,
 } from './geometry';
 import { RalphRig } from './rig';
-import { CARD_PITCH, HEIGHT, P, STACK_Z, WIDTH } from './view';
+import { CARD_PITCH, HEIGHT, LOAD_X, P, PLATE, STACK_Z, WIDTH } from './view';
 
 const Layer = ({
   children,
   layerRef,
+  rest,
 }: {
   children: ReactNode;
   layerRef?: RefObject<SVGSVGElement | null>;
+  rest?: Point3; // where a moving layer sits before the first frame
 }) => (
-  <LayerOf layerRef={layerRef} width={WIDTH} height={HEIGHT}>
+  <LayerOf
+    layerRef={layerRef}
+    width={WIDTH}
+    height={HEIGHT}
+    shift={rest && layerShift(P, rest, WIDTH, HEIGHT)}
+  >
     {children}
   </LayerOf>
 );
 
-const Drawing = memo(function Drawing({
+export const Drawing = memo(function Drawing({
   r,
   label,
   steps,
@@ -82,7 +90,7 @@ const Drawing = memo(function Drawing({
           <Part name="magazine">{magazine(MAG_BACK, 'mag-back', false)}</Part>
           <Part name="bench">{RODS}</Part>
         </Layer>
-        <Layer layerRef={r.car}>
+        <Layer layerRef={r.car} rest={[LOAD_X, 0, 0]}>
           <Part name="carriage">
             {CARRIAGE}
             <g ref={r.carCard} display="none">
@@ -186,15 +194,11 @@ export function RalphFigure({ lang, info }: { lang: Lang; info: ReactNode }) {
   const t = content[lang].ralph;
   return (
     <FigureShell
-      fig="Fig 1"
+      fig={PLATE.fig}
       t={t}
       guide={content[lang].guide}
       info={info}
-      keys={[
-        { mark: 'lit', label: t.fig.keys.lit },
-        { mark: 'raised', label: t.fig.keys.raised },
-        { mark: 'dotted', label: t.fig.keys.dotted },
-      ]}
+      keys={keysOf(PLATE.marks, t.fig.keys)}
       option={0.3}
       makeRig={(io) => new RalphRig(io)}
       drawing={(rig) => <Drawing r={rig.r} label={t.fig.label} steps={t.steps} />}

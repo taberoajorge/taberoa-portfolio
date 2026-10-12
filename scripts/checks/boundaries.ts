@@ -22,8 +22,8 @@ const RULES: Record<string, (from: string, to: string | null, spec: string) => s
   figures: (_from, to) =>
     to && ['site', 'app'].includes(area(to)) ? 'figures never import site or app' : null,
   site: (_from, to) =>
-    to?.startsWith('src/figures/') && !/^src\/figures\/[^/]+\/Figure$/.test(to)
-      ? 'site imports a figure only through its Figure component'
+    to?.startsWith('src/figures/') && to !== 'src/figures/ProjectFigure'
+      ? 'site shows figures only through src/figures/ProjectFigure'
       : null,
   // stylesheets are the exception: globals.css pulls in the kit's theme
   app: (_from, to, spec) =>

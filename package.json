@@ -8,8 +8,8 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "node scripts/run.ts dev",
-    "build": "next build",
+    "dev": "pnpm -s posters && node scripts/run.ts dev",
+    "build": "pnpm -s posters && next build",
     "start": "node scripts/run.ts start",
     "check": "pnpm check:biome && pnpm typecheck && pnpm test && pnpm check:boundaries && pnpm knip && pnpm check:spec && node scripts/agent-hooks.ts certify",
     "check:biome": "biome check .",
@@ -22,7 +22,9 @@
     "delivery:branch": "node scripts/delivery.ts branch",
     "delivery:pr-check": "node scripts/delivery.ts pr-check",
     "delivery:pr-create": "node scripts/delivery.ts pr-create",
-    "delivery:merge": "node scripts/delivery.ts merge"
+    "delivery:merge": "node scripts/delivery.ts merge",
+    "perf": "node scripts/checks/perf.ts",
+    "posters": "tsx --tsconfig scripts/tsconfig.json scripts/posters.tsx"
   },
   "dependencies": {
     "lucide-react": "0.556.0",
@@ -39,6 +41,7 @@
     "knip": "6.41.0",
     "postcss": "8.5.29",
     "tailwindcss": "3.4.18",
+    "tsx": "4.21.0",
     "typescript": "5.9.3"
   },
   "pnpm": {

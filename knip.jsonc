@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["scripts/**/*.ts", "src/**/*.test.ts"],
-  "project": ["src/**/*.{ts,tsx,css}", "scripts/**/*.ts"],
+  "entry": ["scripts/**/*.{ts,tsx}", "src/**/*.test.ts"],
+  "project": ["src/**/*.{ts,tsx,css}", "scripts/**/*.{ts,tsx}"],
   // the /anatomy kit is vendored whole; its unused exports are the kit's, not ours
   "ignore": ["src/iso/**"]
 }

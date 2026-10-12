@@ -42,7 +42,8 @@ src/
   figures/
     engine/   Director, camera, Rig base class, FigureShell, steps UI
     parts/    shared machine parts (bench, camera boxes)
-    <project>/ view.ts, geometry.ts, rig.ts, Figure.tsx
+    <project>/ view.ts, geometry.ts, rig.ts, Figure.tsx (loaded after the page)
+    ProjectFigure.tsx  the static figure the server renders, with a poster
   iso/        vendored /anatomy kit (not edited here)
 scripts/      bootstrap, ports, checks, commit and delivery rules, agent hooks
 openspec/     specs and change proposals

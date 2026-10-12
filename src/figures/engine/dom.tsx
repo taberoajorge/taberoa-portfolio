@@ -21,7 +21,13 @@ export function makePut() {
 }
 type Put = ReturnType<typeof makePut>;
 
-// Moves a whole SVG layer by a world offset, as a CSS transform in % of its own box.
+// A world offset as a CSS transform in % of the layer's own box (layers share one viewBox).
+export function layerShift(P: Projection, by: Point3, width: number, height: number) {
+  const [x, y] = axisVector(P, by);
+  return `translate3d(${((x / width) * 100).toFixed(4)}%, ${((y / height) * 100).toFixed(4)}%, 0)`;
+}
+
+// Moves a whole SVG layer by a world offset.
 export function moveLayer(
   put: Put,
   el: Element | null,
@@ -30,12 +36,7 @@ export function moveLayer(
   width: number,
   height: number,
 ) {
-  const [x, y] = axisVector(P, by);
-  put(
-    el,
-    'style.transform',
-    `translate3d(${((x / width) * 100).toFixed(4)}%, ${((y / height) * 100).toFixed(4)}%, 0)`,
-  );
+  put(el, 'style.transform', layerShift(P, by, width, height));
 }
 
 export function shown(el: Element | null | undefined, on: boolean) {
@@ -56,15 +57,18 @@ export function Layer({
   layerRef,
   width,
   height,
+  shift,
 }: {
   children: ReactNode;
   layerRef?: RefObject<SVGSVGElement | null>;
   width: number;
   height: number;
+  shift?: string; // where a moving layer sits at rest (see layerShift)
 }) {
   return (
     <svg
       ref={layerRef}
+      style={shift ? { transform: shift } : undefined}
       className="iso-svg"
       viewBox={`0 0 ${width} ${height}`}
       aria-hidden="true"

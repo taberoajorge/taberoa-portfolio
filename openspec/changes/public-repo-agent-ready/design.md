@@ -189,22 +189,25 @@ defaultTabs:
   - el gris `#8c8c90` en contraste 3:1;
   - un 404 del favicon.
 - **Figuras diferidas:**
-  - `FigureShell` deja en el servidor los textos y un `<img>` del póster, con su ancho y alto;
-  - el dibujo y su rig se importan con `import()` cuando un `IntersectionObserver` con margen de una pantalla detecta que la figura se acerca;
-  - mientras el código llega, el póster ocupa exactamente el mismo hueco;
-  - en escritorio, la primera figura cae en la primera pantalla y su póster puede ser el LCP (un `<img>` sí cuenta, el SVG inline no). Por eso el póster de la primera figura no es diferido y lleva `fetchpriority="high"`; los demás van con `loading="lazy"`.
+  - **Medido:** el contenido de los dos idiomas (unos 11 KB con gzip) y el kit iso (unos 10 KB) no caben en el presupuesto de JS si viajan en la primera carga. Por eso la figura entera se difiere, no solo el dibujo.
+  - `src/figures/ProjectFigure.tsx` (servidor) pinta la versión estática con el mismo marco (`engine/frame.tsx`: `FigureFrame` y `Controls`), los textos y un `<img>` del póster con su ancho y alto. La envuelve `src/figures/Deferred.tsx` (cliente, unos cientos de bytes), que, tras el evento `load` y con el navegador libre, observa la figura con un margen de una pantalla y entonces importa con `import()` su `Figure.tsx` y la sustituye.
+  - Los datos de la placa (número de figura, leyenda y lectura en reposo) viven en `PLATE`, en el `view.ts` de cada figura, y los comparten la versión estática y la viva.
+  - Las capas que se mueven llevan su posición de reposo en el marcado (`Layer rest`), así que el póster y la figura viva coinciden y el cambio no se nota.
+  - Los pósters van con `loading="lazy"` y sin prioridad alta: el LCP medido es el párrafo del hero, en móvil y en escritorio.
   - *Alternativa descartada:* `next/dynamic` con SSR, que hidrata y descarga el código igual.
-- **Pósters:** `scripts/posters.tsx` usa `react-dom/server` para renderizar cada `Drawing` en su estado inicial. Junta las capas en un solo `<svg>` con el CSS del tema claro embebido y lo escribe en `public/figures/<id>.svg`. Se ejecuta antes de `next build` (`prebuild`). Pesa un orden de magnitud menos que el SVG inline porque se descarga en diferido, se cachea y no bloquea.
+- **Pósters:** `scripts/posters.tsx` (con `tsx`) usa `react-dom/server` para renderizar cada `Drawing` en reposo. Anida las capas en un solo `<svg>` (el desplazamiento de reposo pasa a `x`/`y`), embebe `iso.css` y lo escribe en `public/figures/<id>.svg`, que es un archivo generado e ignorado por Git. `pnpm build` y `pnpm dev` lo ejecutan antes. Pesan de 17 a 28 KB con gzip, se descargan aparte, se cachean y no bloquean.
 - **CSS:** se activa `experimental.inlineCss` de Next 15, que mete *todo* el CSS en el HTML (no solo el crítico): hoy son 22 KB, 5,7 KB con gzip, y caben de sobra en el presupuesto de 40 KB. Elimina la petición bloqueante.
 - **Contraste:** se sobrescribe el token `--anatomy-muted` del tema claro con `#6b6b70`, que da unos 4,7:1 sobre `#f2f2ef` y más sobre `#fbfbfa`. Se hace en `globals.css`, no en el kit. El token solo lo usa texto (esquinas, leyenda, pies y guía), no trazos de la geometría, así que el atenuado del foco no cambia.
 - **Iconos:** `src/app/icon.svg` y `apple-icon.png`, con las convenciones de archivo de Next, que generan sus `<link>`.
 - **`llms.txt`:** la ruta `src/app/llms.txt/route.ts` es estática (`dynamic = 'force-static'`) y se genera a partir de `content/en.ts` y `site.ts`. Incluye un enlace a `/es`.
-- **First Load JS:** el presupuesto se mide sin comprimir, igual que lo informa `next build`. Hoy son 136 KB (102 KB compartidos). Bajarlo a 110 KB o menos sale de sacar el código de las figuras de la primera carga.
+- **First Load JS:** el presupuesto se mide comprimido (lo transferido), que es la cifra que informa `next build`: Lighthouse decodifica 437 KB de scripts para los 134 KB que da `next build`. Hoy son 134 KB (102 KB compartidos). Bajarlo a 110 KB o menos sale de sacar el código de las figuras de la primera carga.
 - **`pnpm perf` (`scripts/checks/perf.ts`):**
   - ejecuta Lighthouse en versión fija con `pnpm dlx`, en móvil y escritorio, sobre `/` y `/es`;
   - comprueba las puntuaciones;
   - mide el HTML comprimido, el JS de la primera carga (manifiesto del build) y el LCP, el TBT y el CLS frente a los presupuestos;
   - con `--url`, apunta a producción.
+- **LCP:** el presupuesto inicial de 1,2 s no es alcanzable. Lighthouse simula un 4G lento y cuenta el runtime de Next (unos 103 KB), que se pide antes de que pinte el hero; el pintado real tarda unos 50 ms (8 ms de TTFB y 35 de render). Con 1,9 s simulados la puntuación es 100, así que el presupuesto queda en 2,0 s en móvil y 0,8 s en escritorio.
+- **JS de la primera carga:** `pnpm perf` suma lo transferido en scripts pedidos antes del evento `load`.
 - **CI:** un job `perf` levanta `pnpm start` y ejecuta `pnpm perf --ci`, que en Performance acepta 95 o más.
 - **Middleware de idioma:** se mantiene, porque en Vercel es Routing Middleware y su coste es mínimo. Se mide en producción, y si sube el TTFB se sustituye por `redirects` con condiciones `has`/`missing` en `next.config`.
 

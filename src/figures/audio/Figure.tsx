@@ -2,9 +2,11 @@
 
 import { memo, type ReactNode, type RefObject } from 'react';
 import { content, type Lang } from '../../content';
+import type { Point3 } from '../../iso/iso-kit';
 import { Dots, Line, Solid } from '../../iso/react/draw';
 import { PRESET_NAMES, type PresetName } from '../../models/audio/model';
-import { Layer as LayerOf, Part } from '../engine/dom';
+import { Layer as LayerOf, layerShift, Part } from '../engine/dom';
+import { keysOf } from '../engine/frame';
 import { FigureShell } from '../engine/shell';
 import { StepTags, type StepText } from '../engine/steps';
 import { Bench } from '../parts/bench';
@@ -24,16 +26,23 @@ import {
   woundOf,
 } from './geometry';
 import { AudioRig, RAW_TAPE } from './rig';
-import { HEIGHT, PRESET_ANGLES, WIDTH } from './view';
+import { HEIGHT, P, PARK_X, PLATE, PRESET_ANGLES, WIDTH } from './view';
 
 const Layer = ({
   children,
   layerRef,
+  rest,
 }: {
   children: ReactNode;
   layerRef?: RefObject<SVGSVGElement | null>;
+  rest?: Point3; // where a moving layer sits before the first frame
 }) => (
-  <LayerOf layerRef={layerRef} width={WIDTH} height={HEIGHT}>
+  <LayerOf
+    layerRef={layerRef}
+    width={WIDTH}
+    height={HEIGHT}
+    shift={rest && layerShift(P, rest, WIDTH, HEIGHT)}
+  >
     {children}
   </LayerOf>
 );
@@ -57,7 +66,7 @@ const gantrySide = (side: typeof GANTRY_BACK) => (
   </>
 );
 
-const Drawing = memo(function Drawing({
+export const Drawing = memo(function Drawing({
   r,
   label,
   knob,
@@ -92,7 +101,7 @@ const Drawing = memo(function Drawing({
             />
           </Part>
         </svg>
-        <Layer layerRef={r.back}>
+        <Layer layerRef={r.back} rest={[PARK_X, 0, 0]}>
           <Part name="gantry">{gantrySide(GANTRY_BACK)}</Part>
         </Layer>
         <Layer>
@@ -116,7 +125,7 @@ const Drawing = memo(function Drawing({
                   ref={r.wound[i]}
                   className="iso-line"
                   data-tone="mid"
-                  d={woundOf(i, i ? 0.3 : 0.6)}
+                  d={woundOf(i, i ? 0.3 : 0.8)}
                 />
                 <path ref={r.spokes[i]} className="iso-line" data-tone="lo" d={spokesOf(i, 0)} />
                 <Solid paths={reel.hub} tone="mid" />
@@ -128,7 +137,7 @@ const Drawing = memo(function Drawing({
         <Layer>
           <Part name="bench">{rail(RAIL_FRONT)}</Part>
         </Layer>
-        <Layer layerRef={r.front}>
+        <Layer layerRef={r.front} rest={[PARK_X, 0, 0]}>
           <Part name="gantry">
             {HEADS.map((head, k) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: three heads
@@ -160,15 +169,11 @@ export function AudioFigure({ lang, info }: { lang: Lang; info: ReactNode }) {
   const t = content[lang].audio;
   return (
     <FigureShell
-      fig="Fig 3"
+      fig={PLATE.fig}
       t={t}
       guide={content[lang].guide}
       info={info}
-      keys={[
-        { mark: 'raised', label: t.fig.keys.raised },
-        { mark: 'dim', label: t.fig.keys.dim },
-        { mark: 'lit', label: t.fig.keys.lit },
-      ]}
+      keys={keysOf(PLATE.marks, t.fig.keys)}
       option={'natural' as PresetName}
       makeRig={(io) => new AudioRig(io)}
       drawing={(rig) => (

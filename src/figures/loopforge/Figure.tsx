@@ -5,6 +5,7 @@ import { content, type Lang } from '../../content';
 import { translateAlong } from '../../iso/iso-kit';
 import { Dots, Line, Solid } from '../../iso/react/draw';
 import { Layer as LayerOf, Part } from '../engine/dom';
+import { keysOf } from '../engine/frame';
 import { FigureShell } from '../engine/shell';
 import { StepTags, type StepText } from '../engine/steps';
 import { Bench } from '../parts/bench';
@@ -28,7 +29,7 @@ import {
   SHUTTERS,
 } from './geometry';
 import { BLOCKED, LoopForgeRig, rackAt } from './rig';
-import { HEIGHT, P, STORIES, WIDTH } from './view';
+import { HEIGHT, P, PLATE, STORIES, WIDTH } from './view';
 
 const Layer = ({ children }: { children: ReactNode }) => (
   <LayerOf width={WIDTH} height={HEIGHT}>
@@ -44,7 +45,7 @@ const leg = (side: typeof LEG_BACK) => (
   </>
 );
 
-const Drawing = memo(function Drawing({
+export const Drawing = memo(function Drawing({
   r,
   label,
   steps,
@@ -182,15 +183,11 @@ export function LoopForgeFigure({ lang, info }: { lang: Lang; info: ReactNode })
   const t = content[lang].loopforge;
   return (
     <FigureShell
-      fig="Fig 2"
+      fig={PLATE.fig}
       t={t}
       guide={content[lang].guide}
       info={info}
-      keys={[
-        { mark: 'lit', label: t.fig.keys.lit },
-        { mark: 'raised', label: t.fig.keys.raised },
-        { mark: 'edge', label: t.fig.keys.edge },
-      ]}
+      keys={keysOf(PLATE.marks, t.fig.keys)}
       option={3}
       makeRig={(io) => new LoopForgeRig(io)}
       drawing={(rig) => <Drawing r={rig.r} label={t.fig.label} steps={t.steps} />}

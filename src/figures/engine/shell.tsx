@@ -7,6 +7,7 @@ import { type ReactNode, useRef, useState } from 'react';
 import type { LegendKey } from '../../iso/iso-kit';
 import { Plate } from '../../iso/react/draw';
 import { useStillness } from '../../iso/react/live';
+import { Controls, FigureFrame } from './frame';
 import { useDirector, useNarrator, useSteps } from './hooks';
 import type { Io, Rig } from './rig';
 import { Guide, type GuideText, Stepper, type StepText } from './steps';
@@ -79,64 +80,51 @@ export function FigureShell<O, T extends FigText, R extends AnyRig<O, T>>({
   const auto = ui.playing && (!still || ui.consent);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-10">
-      <div>{info}</div>
-      <div className="flex min-w-0 flex-col gap-3 lg:col-start-2 lg:row-span-2 lg:row-start-1">
-        <Stepper steps={t.steps} at={at} label={guide.steps} onPick={pick} />
-        <Plate
-          fig={fig}
-          title={t.fig.title}
-          hint={t.fig.hint}
-          readout={readout}
-          keys={keys}
-          caption={t.fig.caption}
-        >
-          {/* biome-ignore lint/a11y/noStaticElementInteractions: delegates clicks from the step labels, which mirror the stepper buttons */}
-          {/* biome-ignore lint/a11y/useKeyWithClickEvents: the stepper offers the same choice by keyboard */}
-          <div ref={stage} onClick={onTagClick}>
-            {/* the readout anchor must sit inside the plate */}
-            <div ref={anchor}>{drawing(r)}</div>
-          </div>
-        </Plate>
-
-        <p ref={live} className="sr-only" aria-live="polite">
-          {readout}
-        </p>
-
-        <div className="fig-controls">
-          <button
-            type="button"
-            disabled={ui.finished}
-            onClick={() => {
+    <FigureFrame
+      info={info}
+      figure={
+        <>
+          <Stepper steps={t.steps} at={at} label={guide.steps} onPick={pick} />
+          <Plate
+            fig={fig}
+            title={t.fig.title}
+            hint={t.fig.hint}
+            readout={readout}
+            keys={keys}
+            caption={t.fig.caption}
+          >
+            {/* biome-ignore lint/a11y/noStaticElementInteractions: delegates clicks from the step labels, which mirror the stepper buttons */}
+            {/* biome-ignore lint/a11y/useKeyWithClickEvents: the stepper offers the same choice by keyboard */}
+            <div ref={stage} onClick={onTagClick}>
+              {/* the readout anchor must sit inside the plate */}
+              <div ref={anchor}>{drawing(r)}</div>
+            </div>
+          </Plate>
+          <p ref={live} className="sr-only" aria-live="polite">
+            {readout}
+          </p>
+          <Controls
+            t={t}
+            playing={auto}
+            finished={ui.finished}
+            onPlay={() => {
               director.playing = !auto;
               director.consent = true;
               setUi((u) => ({ ...u, playing: !auto, consent: true }));
               kick();
             }}
-          >
-            {auto ? t.pause : t.play}
-          </button>
-          <button
-            type="button"
-            disabled={ui.finished}
-            onClick={() => {
+            onNext={() => {
               director.pending++;
               director.consent = true;
               kick();
             }}
+            onReset={() => reset(ui.option)}
           >
-            {t.next}
-          </button>
-          <button type="button" onClick={() => reset(ui.option)}>
-            {t.reset}
-          </button>
-          {controls({ rig: r, option: ui.option, reset })}
-        </div>
-      </div>
-      {/* the guide stays in view while the figure plays */}
-      <div className="lg:sticky lg:top-8 lg:self-start">
-        <Guide steps={t.steps} at={at} t={guide} onPick={pick} />
-      </div>
-    </div>
+            {controls({ rig: r, option: ui.option, reset })}
+          </Controls>
+        </>
+      }
+      guide={<Guide steps={t.steps} at={at} t={guide} onPick={pick} />}
+    />
   );
 }

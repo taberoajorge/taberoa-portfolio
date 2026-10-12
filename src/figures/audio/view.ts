@@ -1,3 +1,5 @@
+import type { Content } from '../../content';
+import type { KeyMark } from '../../iso/iso-kit';
 import { boxCorners, fitProjection, type Plan, type Point3 } from '../../iso/iso-kit';
 import { duration, TAKE } from '../../models/audio/model';
 
@@ -56,3 +58,10 @@ export const P = fitProjection(
   HEIGHT,
   { pad: 22, azimuth: AZIMUTH },
 );
+
+// What the page shows before the live figure loads: the plate's corner, its legend and readout.
+export const PLATE = {
+  fig: 'Fig 3',
+  marks: ['raised', 'dim', 'lit'] as KeyMark[],
+  readout: (c: Content) => c.audio.fig.say.waiting,
+};

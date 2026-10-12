@@ -22,8 +22,8 @@ La primera respuesta de `/` y `/es` SHALL cumplir:
 - HTML de 40 KB o menos comprimido con gzip;
 - ningún recurso que bloquee el renderizado (el CSS crítico va inline);
 - sin fuentes web (hoy ya no hay ninguna; se mantiene así);
-- First Load JS de 110 KB o menos, sin comprimir, según `next build` (hoy 136 KB);
-- LCP de 1.2 s o menos y TBT de 50 ms o menos en el perfil móvil de Lighthouse;
+- First Load JS de 110 KB o menos comprimido, la misma cifra que informa `next build` (hoy 134 KB);
+- LCP simulado por Lighthouse de 2,0 s o menos en móvil y de 0,8 s o menos en escritorio, y TBT de 50 ms o menos;
 - CLS de 0.
 
 `pnpm perf` MUST comprobar estos presupuestos y fallar si alguno se supera.
@@ -40,21 +40,21 @@ La primera respuesta de `/` y `/es` SHALL cumplir:
 Cada figura SHALL entregar en el HTML inicial solo sus textos (ficha, pasos, guía, leyenda y pie) y un póster estático:
 - un SVG autónomo pregenerado en el build, con el estado de reposo;
 - con ancho y alto explícitos;
-- con `loading="lazy"`, salvo los pósters que caen en la primera pantalla, que se cargan con `fetchpriority="high"` porque pueden ser el elemento LCP.
+- con `loading="lazy"` y sin prioridad alta: el elemento LCP es el texto del hero, en móvil y en escritorio, así que el póster no debe competir con él.
 
-El dibujo interactivo y su código MUST cargarse solo cuando la figura está a menos de una pantalla de distancia, y entonces sustituir al póster sin desplazar el contenido. Sin JavaScript, MUST verse el póster y los textos.
+El dibujo interactivo y su código MUST cargarse después del evento `load` (y cuando el navegador está libre), solo para las figuras a menos de una pantalla de distancia, y entonces sustituir al póster sin desplazar el contenido. Sin JavaScript, MUST verse el póster y los textos.
 
 #### Scenario: Carga inicial
-- **WHEN** se abre `/` y no se hace scroll
-- **THEN** no se ha descargado el código de ninguna figura
+- **WHEN** se abre `/`
+- **THEN** antes del evento `load` no se ha descargado el código de ninguna figura
 
 #### Scenario: Al acercarse
 - **WHEN** el visitante se acerca a una figura
 - **THEN** se descarga su código, el dibujo interactivo sustituye al póster y el CLS sigue en 0
 
-#### Scenario: Póster en la primera pantalla
-- **WHEN** Lighthouse escritorio analiza `/` y el LCP es un póster
-- **THEN** ese póster no es diferido y la auditoría `lcp-lazy-loaded` pasa
+#### Scenario: El LCP es el texto
+- **WHEN** Lighthouse analiza `/` en móvil y en escritorio
+- **THEN** el elemento LCP es el párrafo del hero, no un póster
 
 #### Scenario: Sin JavaScript
 - **WHEN** se abre la página sin JavaScript
