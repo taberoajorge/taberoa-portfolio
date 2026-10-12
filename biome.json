@@ -54,7 +54,8 @@
       "!**/build",
       "!**/coverage",
       "!**/*.d.ts",
-      "!**/globals.css"
+      "!**/globals.css",
+      "!src/iso"
     ]
   }
 }
