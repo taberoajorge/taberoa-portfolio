@@ -282,6 +282,12 @@ export const en = {
     },
     ...controls,
   },
+  writing: {
+    title: 'Writing',
+    lede: 'Stories from the work, checked against the records.',
+    read: 'Read',
+    inEnglish: 'In English',
+  },
   contact: {
     title: "Let's talk",
     description:

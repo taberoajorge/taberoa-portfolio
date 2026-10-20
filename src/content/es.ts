@@ -301,6 +301,12 @@ export const es: Content = {
     },
     ...controls,
   },
+  writing: {
+    title: 'Escritos',
+    lede: 'Historias del trabajo, contrastadas con los registros.',
+    read: 'Leer',
+    inEnglish: 'En inglés',
+  },
   contact: {
     title: 'Hablemos',
     description:

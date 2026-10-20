@@ -1,4 +1,14 @@
-import { content, type Lang, LINKS, PATHS, PROJECTS, REPOS, SITE, STACK } from '../content';
+import {
+  content,
+  type Lang,
+  LINKS,
+  PATHS,
+  type Post,
+  PROJECTS,
+  REPOS,
+  SITE,
+  STACK,
+} from '../content';
 
 // Structured data: who this is, and the open-source work as source code.
 export function jsonLd(lang: Lang) {
@@ -39,5 +49,22 @@ export function jsonLd(lang: Lang) {
         })),
       },
     ],
+  };
+}
+
+export function postJsonLd(post: Post) {
+  const url = `${SITE}/writing/${post.slug}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    '@id': `${url}#post`,
+    url,
+    mainEntityOfPage: url,
+    headline: post.title,
+    description: post.dek,
+    datePublished: post.published,
+    inLanguage: 'en',
+    keywords: post.keywords,
+    author: { '@id': `${SITE}/#person` },
   };
 }
