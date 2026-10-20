@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next';
 import type { ReactNode } from 'react';
 import '../globals.css';
 
@@ -9,6 +10,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="es">
       <body className="iso" data-theme="light">
         {children}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   );
