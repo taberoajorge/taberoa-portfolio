@@ -24,7 +24,8 @@
     "delivery:pr-create": "node scripts/delivery.ts pr-create",
     "delivery:merge": "node scripts/delivery.ts merge",
     "perf": "node scripts/checks/perf.ts",
-    "posters": "tsx --tsconfig scripts/tsconfig.json scripts/posters.tsx"
+    "posters": "tsx --tsconfig scripts/tsconfig.json scripts/posters.tsx",
+    "og": "tsx --tsconfig scripts/tsconfig.json scripts/og.ts"
   },
   "dependencies": {
     "lucide-react": "0.556.0",

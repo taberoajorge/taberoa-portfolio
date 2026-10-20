@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   // the scripts that are run directly; anything else in scripts/ must be imported to count as used
   "entry": [
-    "scripts/{agent-hooks,commit-msg,delivery,port,run}.ts",
+    "scripts/{agent-hooks,commit-msg,delivery,og,port,run}.ts",
     "scripts/checks/{boundaries,parity,perf}.ts",
     "{src,scripts}/**/*.test.ts",
     ".opencode/plugins/*.ts"

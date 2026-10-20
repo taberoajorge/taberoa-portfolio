@@ -54,7 +54,7 @@ export function metadataFor(lang: Lang): Metadata {
   };
 }
 
-// A post has one URL and one language, so no hreflang; the share card is the profile's.
+// A post has one URL and one language, so no hreflang. Its share card is rendered by `pnpm og`.
 export function postMetadata(post: Post): Metadata {
   const t = content.en;
   const url = `/writing/${post.slug}`;
@@ -72,10 +72,16 @@ export function postMetadata(post: Post): Metadata {
       title: post.title,
       description: post.dek,
       locale: t.seo.locale,
-      publishedTime: post.published,
+      publishedTime: `${post.published}T12:00:00Z`,
       authors: [SITE],
+      images: [{ url: `${url}.png`, width: 1200, height: 630, alt: post.title }],
     },
-    twitter: { card: 'summary_large_image', title: post.title, description: post.dek },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.dek,
+      images: [`${url}.png`],
+    },
     robots: { index: true, follow: true },
   };
 }
