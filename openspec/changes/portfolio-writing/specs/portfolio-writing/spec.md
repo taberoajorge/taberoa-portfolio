@@ -33,7 +33,7 @@ Cada página de post SHALL declarar su `canonical` en `/writing/<slug>`, sin alt
 
 #### Scenario: Compartir el post
 - **WHEN** un servicio de previsualización pide `/writing/<slug>`
-- **THEN** recibe `og:type=article`, `og:title` con el título del post y `og:description` con su resumen
+- **THEN** recibe `og:type=article`, `og:title` con el título del post, `og:description` con su resumen y una `og:image` de 1200×630 propia del post
 
 #### Scenario: Datos estructurados
 - **WHEN** se analiza el JSON-LD del post

@@ -27,7 +27,7 @@ Sitio estático en Next 15 con dos páginas (`/` y `/es`), texto en `src/content
 
 - **Paridad:** la línea base local de `pnpm parity` cambia porque Home tiene una sección nueva. → Se compara, se confirma que la diferencia es solo la sección y se guarda la nueva línea base.
 - **Presupuestos:** el HTML de `/` crece unos cientos de bytes. → `pnpm perf` sigue siendo la puerta.
-- **Imagen al compartir:** la tarjeta muestra el perfil, no el título del post. Aceptado para el primer post.
+- **Imagen al compartir:** `opengraph-image` solo aplica al segmento donde vive, así que el post no heredaba la del perfil y LinkedIn mostraba la tarjeta sin imagen. → `pnpm og` (`scripts/og.ts`) renderiza con Chrome headless una tarjeta de 1200×630 a `public/writing/<slug>.png`: la figura isométrica del harness de paridad (`src/figures/parity/geometry.ts`, dibujada con el kit vendorizado) y el título; `postMetadata` y el JSON-LD la referencian.
 
 ## Migration Plan
 
