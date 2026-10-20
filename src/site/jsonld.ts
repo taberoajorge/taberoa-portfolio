@@ -9,6 +9,7 @@ import {
   SITE,
   STACK,
 } from '../content';
+import { cardUrl } from './meta';
 
 // Structured data: who this is, and the open-source work as source code.
 export function jsonLd(lang: Lang) {
@@ -63,7 +64,7 @@ export function postJsonLd(post: Post) {
     headline: post.title,
     description: post.dek,
     datePublished: `${post.published}T12:00:00Z`,
-    image: `${url}.png`,
+    image: `${SITE}${cardUrl(post)}`,
     inLanguage: 'en',
     keywords: post.keywords,
     author: { '@id': `${SITE}/#person` },

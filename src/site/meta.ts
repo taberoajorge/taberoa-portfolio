@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import type { Metadata, Viewport } from 'next';
 import { content, type Lang, LINKS, PATHS, type Post, SITE } from '../content';
 
@@ -54,10 +56,18 @@ export function metadataFor(lang: Lang): Metadata {
   };
 }
 
+// The card's URL carries a hash of the file, so a re-rendered card is fetched afresh by the CDN
+// and by the networks that cache previews by image URL.
+export function cardUrl(post: Post) {
+  const png = readFileSync(`public/writing/${post.slug}.png`);
+  return `/writing/${post.slug}.png?v=${createHash('sha256').update(png).digest('hex').slice(0, 8)}`;
+}
+
 // A post has one URL and one language, so no hreflang. Its share card is rendered by `pnpm og`.
 export function postMetadata(post: Post): Metadata {
   const t = content.en;
   const url = `/writing/${post.slug}`;
+  const card = cardUrl(post);
   return {
     metadataBase: new URL(SITE),
     title: `${post.title} · ${t.hero.name}`,
@@ -74,13 +84,13 @@ export function postMetadata(post: Post): Metadata {
       locale: t.seo.locale,
       publishedTime: `${post.published}T12:00:00Z`,
       authors: [SITE],
-      images: [{ url: `${url}.png`, width: 1200, height: 630, alt: post.title }],
+      images: [{ url: card, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.dek,
-      images: [`${url}.png`],
+      images: [card],
     },
     robots: { index: true, follow: true },
   };
