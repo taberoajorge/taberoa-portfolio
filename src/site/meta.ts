@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { content, type Lang, LINKS, PATHS, SITE } from '../content';
+import { content, type Lang, LINKS, PATHS, type Post, SITE } from '../content';
 
 /** @public Next reads it through the layouts' re-export. */
 export const viewport: Viewport = {
@@ -50,6 +50,32 @@ export function metadataFor(lang: Lang): Metadata {
       username: LINKS.github.split('/').pop(),
     },
     twitter: { card: 'summary_large_image', title: t.seo.title, description: t.seo.description },
+    robots: { index: true, follow: true },
+  };
+}
+
+// A post has one URL and one language, so no hreflang; the share card is the profile's.
+export function postMetadata(post: Post): Metadata {
+  const t = content.en;
+  const url = `/writing/${post.slug}`;
+  return {
+    metadataBase: new URL(SITE),
+    title: `${post.title} · ${t.hero.name}`,
+    description: post.dek,
+    authors: [{ name: t.hero.name, url: SITE }],
+    keywords: post.keywords,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      siteName: t.hero.name,
+      title: post.title,
+      description: post.dek,
+      locale: t.seo.locale,
+      publishedTime: post.published,
+      authors: [SITE],
+    },
+    twitter: { card: 'summary_large_image', title: post.title, description: post.dek },
     robots: { index: true, follow: true },
   };
 }

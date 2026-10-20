@@ -3,6 +3,7 @@ import { Contact } from './Contact';
 import { Hero } from './Hero';
 import { jsonLd } from './jsonld';
 import { Projects } from './Projects';
+import { Writing } from './Writing';
 
 export function Home({ lang }: { lang: Lang }) {
   return (
@@ -15,6 +16,7 @@ export function Home({ lang }: { lang: Lang }) {
       <main className="mx-auto flex max-w-6xl flex-col gap-20 px-5 py-10 md:px-8 md:py-16">
         <Hero lang={lang} />
         <Projects lang={lang} />
+        <Writing lang={lang} />
         <Contact lang={lang} />
       </main>
     </>

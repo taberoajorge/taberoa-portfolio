@@ -1,4 +1,4 @@
-import { content, LINKS, PATHS, PROJECTS, REPOS, SITE, STACK } from '../content';
+import { content, LINKS, PATHS, POSTS, PROJECTS, REPOS, SITE, STACK } from '../content';
 
 // /llms.txt (llmstxt.org): the page in plain Markdown for AI search and assistants, built from the
 // same English content, so it can never drift from what visitors read.
@@ -16,6 +16,10 @@ export function llmsTxt() {
 ## Open-source projects
 
 ${PROJECTS.map((id) => `- [${t.projects[id].title}](${REPOS[id]}): ${t.projects[id].did} (${t.projects[id].stack.join(', ')})`).join('\n')}
+
+## Writing
+
+${POSTS.map((p) => `- [${p.title}](${SITE}/writing/${p.slug}): ${p.dek}`).join('\n')}
 
 ## Contact
 
